@@ -52,4 +52,5 @@ run-app: ## Start production app
 	[ -n "$$POCKETPILOT_CONFIG_DIR" ] || POCKETPILOT_CONFIG_DIR=$$(pwd)/app/config && \
 	docker run --network="pocketpilot" -p 80:80 -p 443:443 --name pocketpilot-web -d --restart unless-stopped \
 		-v "$$POCKETPILOT_CONFIG_DIR/config.local.neon:/pocketpilot/app/config/config.local.neon" \
+		-v "$$(pwd)/letsencrypt:/home/letsencrypt" \
 		pocketpilot-web

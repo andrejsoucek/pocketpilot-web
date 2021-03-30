@@ -27,7 +27,6 @@ RUN apt update && apt dist-upgrade -y && \
         nano \
         nginx \
         supervisor \
-        cron \
         php7.4-apc \
         php7.4-apcu \
         php7.4-bz2 \
@@ -134,6 +133,10 @@ RUN npm run build
 ####################### Production image #############################################################
 FROM build as production
 WORKDIR /pocketpilot
+
+RUN useradd -m -s /bin/bash -G sudo letsencrypt
+COPY ./.docker/app/letsencrypt/init.sh /home/letsencrypt/init.sh
+RUN chmod +x /home/letsencrypt/init.sh && chown letsencrypt:letsencrypt /home/letsencrypt/init.sh
 
 COPY ./.docker/app/nginx/sites.d/sites.conf /etc/nginx/sites.d/
 

@@ -34,23 +34,24 @@ build: ## Make production build
 
 run-db: ## Start production database
 	[ -n "$$(docker network ls --filter name=pocketpilot -q)" ] || docker network create pocketpilot
-	[ -n "$$POCKETPILOT_CONFIG_DIR" ] || POCKETPILOT_CONFIG_DIR=$$(pwd)/app/config && \
-	[ -n "$$POCKETPILOT_DATA_DIR" ] || POCKETPILOT_DATA_DIR=$$(pwd)/dbdata && \
+	[ -n "$$POCKETPILOT_CONFIG_DIR" ] || POCKETPILOT_CONFIG_DIR=/var/lib/pocketpilot/config && \
+	[ -n "$$POCKETPILOT_DATA_DIR" ] || POCKETPILOT_DATA_DIR=/var/lib/pocketpilot/dbdata && \
 	password=`awk '/\s+password:/ {print $$2}' "$$POCKETPILOT_CONFIG_DIR/config.local.neon"` && \
 	docker run --network="pocketpilot" --name postgis -d --restart unless-stopped \
 		-e POSTGRES_USER=postgres \
 		-e POSTGRES_PASSWORD="$$password" \
 		-e POSTGRES_DB=pocketpilot \
 		-v "$$POCKETPILOT_CONFIG_DIR/fixtures/init.sql:/docker-entrypoint-initdb.d/init.sql" \
-		-v "$$POCKETPILOT_CONFIG_DIR/fixtures/airspace.sql:/docker-entrypoint-initdb.d/airspace.sql" \
-		-v "$$POCKETPILOT_CONFIG_DIR/fixtures/elevation.sql:/docker-entrypoint-initdb.d/elevation.sql" \
 		-v "$$POCKETPILOT_DATA_DIR:/var/lib/postgresql/data" \
 		postgis/postgis:13-3.1
 
 run-app: ## Start production app
 	[ -n "$$(docker network ls --filter name=pocketpilot -q)" ] || docker network create pocketpilot
-	[ -n "$$POCKETPILOT_CONFIG_DIR" ] || POCKETPILOT_CONFIG_DIR=$$(pwd)/app/config && \
+	[ -n "$$POCKETPILOT_CONFIG_DIR" ] || POCKETPILOT_CONFIG_DIR=/var/lib/pocketpilot/config && \
+	[ -n "$$POCKETPILOT_SSL_DIR" ] || POCKETPILOT_SSL_DIR=/var/lib/pocketpilot/letsencrypt && \
+	[ -n "$$POCKETPILOT_MAPS_DIR" ] || POCKETPILOT_MAPS_DIR=/var/lib/pocketpilot/maps && \
 	docker run --network="pocketpilot" -p 80:80 -p 443:443 --name pocketpilot-web -d --restart unless-stopped \
 		-v "$$POCKETPILOT_CONFIG_DIR/config.local.neon:/pocketpilot/app/config/config.local.neon" \
-		-v "$$(pwd)/letsencrypt:/home/letsencrypt" \
+		-v "$$POCKETPILOT_SSL_DIR:/home/letsencrypt" \
+		-v "$$POCKETPILOT_MAPS_DIR:/pocketpilot/www/maps" \
 		pocketpilot-web

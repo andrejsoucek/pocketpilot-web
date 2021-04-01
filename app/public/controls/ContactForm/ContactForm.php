@@ -64,9 +64,9 @@ class ContactForm extends BaseControl
     {
         $message = new Message();
         $message->addTo('andrejsoucek@gmail.com'); //@TODO do cfg
-        $message->setFrom($this->user->getIdentity()->email);
+        $message->setFrom('info@pocketpilot.cz');
         $message->setSubject('Zpráva z PocketPilot.cz');
-        $message->setBody($s);
+        $message->setBody($s . "\n\n" . $this->user->getIdentity()->email);
         return $message;
     }
 }

@@ -26,6 +26,7 @@ RUN apt update && apt dist-upgrade -y && \
     apt install -y --no-install-recommends \
         nano \
         nginx \
+        sudo \
         supervisor \
         php7.4-apc \
         php7.4-apcu \
@@ -134,9 +135,10 @@ RUN npm run build
 FROM build as production
 WORKDIR /pocketpilot
 
-RUN useradd -m -s /bin/bash -G sudo letsencrypt
-COPY ./.docker/app/letsencrypt/init.sh /home/letsencrypt/init.sh
-RUN chmod +x /home/letsencrypt/init.sh && chown letsencrypt:letsencrypt /home/letsencrypt/init.sh
+RUN useradd -m -s /bin/bash letsencrypt
+COPY ./.docker/app/letsencrypt/init.sh /usr/local/bin/letsencrypt-init.sh
+RUN chmod 755 /usr/local/bin/letsencrypt-init.sh
+RUN echo 'letsencrypt ALL = NOPASSWD: /usr/sbin/service nginx force-reload' > /etc/sudoers.d/letsencrypt && chmod 600 /etc/sudoers.d/letsencrypt
 
 COPY ./.docker/app/nginx/sites.d/sites.conf /etc/nginx/sites.d/
 

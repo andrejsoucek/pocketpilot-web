@@ -16,20 +16,13 @@ use Nette\Security\User;
 class ContactForm extends BaseControl
 {
 
-    public $onSuccess = [];
+    public array $onSuccess = [];
 
-    /**
-     * @var IMailer
-     */
-    private $mailer;
-    /**
-     * @var Gettext
-     */
-    private $translator;
-    /**
-     * @var User
-     */
-    private $user;
+    private IMailer $mailer;
+
+    private Gettext $translator;
+
+    private User $user;
 
     public function __construct(IMailer $mailer, Gettext $translator, User $user)
     {
@@ -71,9 +64,9 @@ class ContactForm extends BaseControl
     {
         $message = new Message();
         $message->addTo('andrejsoucek@gmail.com'); //@TODO do cfg
-        $message->setFrom($this->user->getIdentity()->email);
+        $message->setFrom('info@pocketpilot.cz');
         $message->setSubject('Zpráva z PocketPilot.cz');
-        $message->setBody($s);
+        $message->setBody($s . "\n\n" . $this->user->getIdentity()->email);
         return $message;
     }
 }

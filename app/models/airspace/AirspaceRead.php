@@ -16,8 +16,7 @@ class AirspaceRead
 {
     use SmartObject;
 
-    /** @var Context */
-    private $database;
+    private Context $database;
 
     public function __construct(Context $database)
     {
@@ -25,7 +24,7 @@ class AirspaceRead
     }
 
     /**
-     * @param array<array<float, float>> $latlngs
+     * @param array<int, array<int, string>> $latlngs
      * @return array<AirspaceEntry>
      */
     public function fetchIntersections(array $latlngs): array
@@ -59,9 +58,7 @@ class AirspaceRead
     }
 
     /**
-     * @param string $type
-     * @param string $name
-     * @param array<array<float, float>> $latlngs
+     * @param array<int, array<int, string>> $latlngs
      */
     private function fetchHorizontalIntersections(string $type, string $name, array $latlngs): array
     {

@@ -20,22 +20,19 @@ abstract class AppPresenter extends Presenter
 {
 
     /**
-     * @var string
      * @persistent
      */
-    public $lang;
+    public string $lang;
 
     /**
      * @inject
-     * @var Gettext
      */
-    public $translator;
+    public Gettext $translator;
 
     /**
      * @inject
-     * @var WebpackControlFactory
      */
-    public $webpackControlFactory;
+    public WebpackControlFactory $webpackControlFactory;
 
     public function startup()
     {

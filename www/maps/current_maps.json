@@ -1,0 +1,37 @@
+{
+  "maps": [
+    {
+      "id": 0,
+      "country": "Czech Republic",
+      "mapName": "OpenFlightMaps 25FEB21 Basic",
+      "fileSize": 43.6,
+      "fileName": "CZ_OFM_Z11_25FEB21.sqlite",
+      "atlasName": "OFM CZ 11"
+    },
+    {
+      "id": 1,
+      "country": "Czech Republic",
+      "mapName": "OpenFlightMaps 25FEB21 Detailed",
+      "fileSize": 129.4,
+      "fileName": "CZ_OFM_Z12_25FEB21.sqlite",
+      "atlasName": "OFM CZ 12"
+    },
+    {
+      "id": 2,
+      "country": "Slovakia",
+      "mapName": "OpenFlightMaps 25FEB21 Basic",
+      "fileSize": 25.8,
+      "fileName": "SK_OFM_Z11_25FEB21.sqlite",
+      "atlasName": "OFM SK 11"
+    },
+    {
+      "id": 3,
+      "country": "Slovakia",
+      "mapName": "OpenFlightMaps 25FEB21 Detailed",
+      "fileSize": 74.4,
+      "fileName": "SK_OFM_Z12_25FEB21.sqlite",
+      "atlasName": "OFM SK 12"
+    }
+  ],
+  "timestamp": 1614440633
+}

@@ -7,6 +7,8 @@ namespace PP\Track;
 use Nette\Database\Context;
 use Nette\Database\IRow;
 use Nette\SmartObject;
+use PDOException;
+use RuntimeException;
 
 /**
  * @author Andrej Souček
@@ -15,8 +17,7 @@ class TrackRead
 {
     use SmartObject;
 
-    /** @var Context */
-    private $database;
+    private Context $database;
 
     public function __construct(Context $database)
     {
@@ -24,9 +25,8 @@ class TrackRead
     }
 
     /**
-     * @param int $userId
-     * @return array [trackId => TrackEntry]
-     * @throws \RuntimeException
+     * @return array<int, TrackEntry>
+     * @throws RuntimeException
      */
     public function fetchForUser(int $userId): array
     {
@@ -44,18 +44,16 @@ class TrackRead
                 )
                 ->where(TrackDatabaseDef::COLUMN_USER_ID, $userId)->fetchAll();
             foreach ($rows as $row) {
-                $ret[$row[TrackDatabaseDef::COLUMN_ID]] = $this->toEntity($row);
+                $ret[(int) $row[TrackDatabaseDef::COLUMN_ID]] = $this->toEntity($row);
             }
             return $ret;
-        } catch (\PDOException $e) {
-            throw new \RuntimeException($e->getMessage(), (int)$e->getCode(), $e);
+        } catch (PDOException $e) {
+            throw new RuntimeException($e->getMessage(), (int)$e->getCode(), $e);
         }
     }
 
     /**
-     * @param string $hash
-     * @return TrackEntry|null
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function fetchByHash(string $hash): ?TrackEntry
     {
@@ -72,15 +70,11 @@ class TrackRead
                 )
                 ->where(TrackDatabaseDef::COLUMN_HASH, $hash)->fetch();
             return $row ? $this->toEntity($row) : null;
-        } catch (\PDOException $e) {
-            throw new \RuntimeException($e->getMessage(), (int)$e->getCode(), $e);
+        } catch (PDOException $e) {
+            throw new RuntimeException($e->getMessage(), (int)$e->getCode(), $e);
         }
     }
 
-    /**
-     * @param IRow $data
-     * @return TrackEntry
-     */
     private function toEntity(IRow $data): TrackEntry
     {
         return new TrackEntry(

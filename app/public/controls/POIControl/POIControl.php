@@ -12,16 +12,9 @@ use PP\POI\POIRead;
  */
 class POIControl extends BaseControl
 {
+    private POIRead $read;
 
-    /**
-     * @var POIRead
-     */
-    private $read;
-
-    /**
-     * @var Gettext
-     */
-    private $translator;
+    private Gettext $translator;
 
     public function __construct(POIRead $read, Gettext $translator)
     {

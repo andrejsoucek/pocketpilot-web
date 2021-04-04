@@ -14,15 +14,9 @@ class PasswordCredentials implements Credentials
 {
     use SmartObject;
 
-    /**
-     * @var string
-     */
-    private $email;
+    private string $email;
 
-    /**
-     * @var string
-     */
-    private $password;
+    private string $password;
 
     public function __construct(string $email, string $password)
     {
@@ -32,12 +26,12 @@ class PasswordCredentials implements Credentials
         $this->password = $password;
     }
 
-    public function getEmail()
+    public function getEmail(): string
     {
         return $this->email;
     }
 
-    public function getAuthString()
+    public function getAuthString(): string
     {
         return $this->password;
     }

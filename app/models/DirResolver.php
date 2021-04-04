@@ -4,26 +4,20 @@ declare(strict_types=1);
 
 namespace PP;
 
+use Nette\SmartObject;
+
 /**
  * @author Andrej Souček
  */
 class DirResolver
 {
+    use SmartObject;
 
-    /**
-     * @var string
-     */
-    private $appDir;
+    private string $appDir;
 
-    /**
-     * @var string
-     */
-    private $scriptsDir;
+    private string $scriptsDir;
 
-    /**
-     * @var string
-     */
-    private $manifestDir;
+    private string $manifestDir;
 
     public function __construct(string $appDir, string $scriptsDir, string $manifestDir)
     {

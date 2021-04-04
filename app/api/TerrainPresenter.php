@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PP\API;
 
+use Nette\Application\AbortException;
 use Nette\Application\Responses\JsonResponse;
 use Nette\Application\UI\Presenter;
 use PP\Terrain\TerrainEntry;
@@ -14,11 +15,7 @@ use PP\Terrain\TerrainRead;
  */
 class TerrainPresenter extends Presenter
 {
-
-    /**
-     * @var TerrainRead
-     */
-    private $read;
+    private TerrainRead $read;
 
     public function __construct(TerrainRead $read)
     {
@@ -27,8 +24,7 @@ class TerrainPresenter extends Presenter
     }
 
     /**
-     * @params string $params
-     * @throws \Nette\Application\AbortException
+     * @throws AbortException
      */
     public function actionRead(string $path): void
     {

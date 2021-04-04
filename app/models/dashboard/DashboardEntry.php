@@ -14,40 +14,19 @@ class DashboardEntry
 {
     use SmartObject;
 
-    /**
-     * @var int
-     */
-    private $id;
+    private int $id;
 
-    /**
-     * @var string
-     */
-    private $title;
+    private string $title;
 
-    /**
-     * @var DateTime
-     */
-    private $created;
+    private DateTime $created;
 
-    /**
-     * @var null|string
-     */
-    private $item1;
+    private ?string $item1;
 
-    /**
-     * @var null|string
-     */
-    private $item2;
+    private ?string $item2;
 
-    /**
-     * @var null|string
-     */
-    private $item3;
+    private ?string $item3;
 
-    /**
-     * @var null|string
-     */
-    private $item4;
+    private ?string $item4;
 
     public function __construct(
         int $id,
@@ -67,57 +46,36 @@ class DashboardEntry
         $this->item4 = $item4;
     }
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
     public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * @return DateTime
-     */
     public function getCreated(): DateTime
     {
         return $this->created;
     }
 
-    /**
-     * @return null|string
-     */
     public function getItem1(): ?string
     {
         return $this->item1;
     }
 
-    /**
-     * @return null|string
-     */
     public function getItem2(): ?string
     {
         return $this->item2;
     }
 
-    /**
-     * @return null|string
-     */
     public function getItem3(): ?string
     {
         return $this->item3;
     }
 
-    /**
-     * @return null|string
-     */
     public function getItem4(): ?string
     {
         return $this->item4;

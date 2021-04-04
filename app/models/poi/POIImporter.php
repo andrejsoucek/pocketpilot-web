@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PP\POI;
 
+use InvalidArgumentException;
 use Nette\Database\Context;
 use Nette\Http\FileUpload;
 use Nette\SmartObject;
@@ -18,10 +19,7 @@ class POIImporter
 {
     use SmartObject;
 
-    /**
-     * @var Context
-     */
-    private $database;
+    private Context $database;
 
     public function __construct(Context $database)
     {
@@ -29,18 +27,18 @@ class POIImporter
     }
 
     /**
-     * @param FileUpload $upload
      * @throws RuntimeException
      * @throws UnexpectedValueException
+     * @throws InvalidArgumentException
      */
-    public function process(FileUpload $upload)
+    public function process(FileUpload $upload): void
     {
         switch (pathinfo($upload->getName(), PATHINFO_EXTENSION)) {
             case 'csv':
                 $this->insert(self::map($upload));
                 break;
             default:
-                throw new UnexpectedValueException("Invalid file type. Only CSV files allowed.");
+                throw new InvalidArgumentException("Invalid file type. Only CSV files allowed.");
         }
     }
 
@@ -74,10 +72,17 @@ class POIImporter
         $this->database->commit();
     }
 
+    /**
+     * @throws UnexpectedValueException
+     */
     private static function map(FileUpload $fileUpload): array
     {
         $ret = [];
-        $rows = str_getcsv($fileUpload->getContents(), "\n"); //parse the rows
+        $content = $fileUpload->getContents();
+        if ($content === null) {
+            throw new UnexpectedValueException('Empty file!');
+        }
+        $rows = str_getcsv($content, "\n"); //parse the rows
         unset($rows[0]);
         foreach ($rows as $row) {
             $values = str_getcsv($row, ";");

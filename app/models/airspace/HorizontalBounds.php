@@ -6,6 +6,9 @@ namespace PP\Airspace;
 
 use ArrayObject;
 
+/**
+ * @extends ArrayObject<int, RelativePosition>
+ */
 class HorizontalBounds extends ArrayObject
 {
 

@@ -7,6 +7,7 @@ namespace PP\User;
 use Nette\Database\Context;
 use Nette\Database\IRow;
 use Nette\SmartObject;
+use Nette\Utils\AssertionException;
 use Nette\Utils\Validators;
 use PP\IncorrectCredentialsException;
 
@@ -17,8 +18,7 @@ class UserRead
 {
     use SmartObject;
 
-    /** @var Context */
-    private $database;
+    private Context $database;
 
     public function __construct(Context $database)
     {
@@ -26,10 +26,8 @@ class UserRead
     }
 
     /**
-     * @param string $email
-     * @return UserEntry
      * @throws IncorrectCredentialsException
-     * @throws \Nette\Utils\AssertionException
+     * @throws AssertionException
      */
     public function fetchBy(string $email): UserEntry
     {
@@ -38,9 +36,9 @@ class UserRead
             ->where(UserDatabaseDef::COLUMN_EMAIL, $email)->fetch();
         if ($row) {
             return $this->toEntity($row);
-        } else {
-            throw new IncorrectCredentialsException("User with email '$email' does not exists.");
         }
+
+        throw new IncorrectCredentialsException("User with email '$email' does not exists.");
     }
 
     /**

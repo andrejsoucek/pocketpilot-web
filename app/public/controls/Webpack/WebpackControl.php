@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PP\Controls;
 
+use LogicException;
 use PP\DirResolver;
 
 /**
@@ -11,10 +12,7 @@ use PP\DirResolver;
  */
 class WebpackControl extends BaseControl
 {
-    /**
-     * @var DirResolver
-     */
-    private $resolver;
+    private DirResolver $resolver;
 
     public function __construct(DirResolver $resolver)
     {
@@ -31,20 +29,20 @@ class WebpackControl extends BaseControl
     private function resolvePaths(string $entry): array
     {
         if (empty($entry)) {
-            throw new \LogicException('Missing $entry string.');
+            throw new LogicException('Missing $entry string.');
         }
         $manifest = file_get_contents($this->resolver->getManifestDir() . '/manifest.json');
         if (!$manifest) {
-            throw new \LogicException('Unable to read manifest.json in %wwwDir%/dist/.');
+            throw new LogicException('Unable to read manifest.json in %wwwDir%/dist/.');
         }
         $json = json_decode($manifest, true);
         if (isset($json['entrypoints'][$entry]) && isset($json['entrypoints'][$entry]['js'])) {
             return array_map(function ($s) {
                 return "{$this->resolver->getScriptsDir()}/$s";
             }, $json['entrypoints'][$entry]['js']);
-        } else {
-            throw new \LogicException("Unable to find entrypoint '$entry' in manifest.json.");
         }
+
+        throw new LogicException("Unable to find entrypoint '$entry' in manifest.json.");
     }
 }
 

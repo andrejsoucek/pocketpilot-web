@@ -24,26 +24,17 @@ class TracksPresenter extends AppPresenter
     use Authentication;
     use Navbar;
 
-    /**
-     * @var TrackRead
-     */
-    private $read;
+    private TrackRead $read;
 
     /**
      * Lazy getter
      * @var TrackEntry[]
      */
-    private $tracks;
+    private array $tracks;
 
-    /**
-     * @var TrackDelete
-     */
-    private $delete;
+    private TrackDelete $delete;
 
-    /**
-     * @var SaveTrackFormFactory
-     */
-    private $saveTrackFormFactory;
+    private SaveTrackFormFactory $saveTrackFormFactory;
 
     public function __construct(
         TrackRead $read,
@@ -62,10 +53,10 @@ class TracksPresenter extends AppPresenter
         $this->template->maximum = $this->getMaximum();
     }
 
-    public function renderNavlog($id): void
+    public function renderNavlog(?int $id): void
     {
         if (
-            $id &&
+            $id !== null &&
             isset($this->getTracks()[$id]) &&
             $this->getTracks()[$id]->getUserId() === $this->getUser()->getId()
         ) {
@@ -83,9 +74,9 @@ class TracksPresenter extends AppPresenter
         return $this->tracks;
     }
 
-    public function renderMap($id): void
+    public function renderMap(?int $id): void
     {
-        if ($id) {
+        if ($id !== null) {
             if (
                 isset($this->getTracks()[$id]) &&
                 $this->getTracks()[$id]->getUserId() === $this->getUser()->getId()
@@ -99,10 +90,10 @@ class TracksPresenter extends AppPresenter
         }
     }
 
-    public function handleDelete($id, $name): void
+    public function handleDelete(int $id, string $name): void
     {
         try {
-            $this->delete->process((int)$id, $this->user->getId());
+            $this->delete->process($id, $this->user->getId());
             $this->flashMessage($this->translator->translate("Track '%s' has been deleted.", $name));
         } catch (\RuntimeException $e) {
             $this->flashMessage($this->translator->translate("An error occurred while deleting the track."));
@@ -127,14 +118,15 @@ class TracksPresenter extends AppPresenter
     {
         $id = $this->getParameter('id');
         $form = $this->saveTrackFormFactory->create($id ? $this->getTracks()[$id] : null);
-        $form->onSuccess[] = function (string $trackName) {
+        $form->onSuccess[] = function (string $trackName): void {
             $this->flashMessage($this->translator->translate("Track '%s' has been saved.", $trackName));
             $this->redirect('Tracks:');
         };
-        $form->onError[] = function (string $message) {
+        $form->onError[] = function (string $message): void {
             $this->flashMessage($message);
             $this->redrawControl();
         };
+
         return $form;
     }
 }

@@ -14,20 +14,11 @@ class FacebookCredentials implements Credentials
 {
     use SmartObject;
 
-    /**
-     * @var string
-     */
-    private $email;
+    private string $email;
 
-    /**
-     * @var string
-     */
-    private $uid;
+    private string $uid;
 
-    /**
-     * @var string
-     */
-    private $firstName;
+    private string $firstName;
 
     public function __construct(string $email, string $uid, string $firstName)
     {
@@ -39,17 +30,17 @@ class FacebookCredentials implements Credentials
         $this->firstName = $firstName;
     }
 
-    public function getEmail()
+    public function getEmail(): string
     {
         return $this->email;
     }
 
-    public function getAuthString()
+    public function getAuthString(): string
     {
         return $this->uid;
     }
 
-    public function getFirstName()
+    public function getFirstName(): string
     {
         return $this->firstName;
     }

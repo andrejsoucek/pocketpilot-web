@@ -20,10 +20,7 @@ class ContactPresenter extends AppPresenter
     use Authentication;
     use Navbar;
 
-    /**
-     * @var ContactFormFactory
-     */
-    private $contactFormFactory;
+    private ContactFormFactory $contactFormFactory;
 
     public function __construct(ContactFormFactory $contactFormFactory)
     {

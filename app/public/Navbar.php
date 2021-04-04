@@ -14,10 +14,9 @@ trait Navbar
 {
 
     /**
-     * @var NavbarControlFactory
      * @inject
      */
-    public $navbarControlFactory;
+    public NavbarControlFactory $navbarControlFactory;
 
     protected function createComponentNavbar(): NavbarControl
     {

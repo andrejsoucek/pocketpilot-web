@@ -9,6 +9,7 @@ use Facebook\Facebook;
 use Facebook\GraphNodes\GraphUser;
 use Nette\Security\AuthenticationException;
 use Nette\SmartObject;
+use Nette\Utils\AssertionException;
 use Nette\Utils\Validators;
 
 /**
@@ -18,10 +19,7 @@ class FacebookService
 {
     use SmartObject;
 
-    /**
-     * @var Facebook
-     */
-    private $fb;
+    private Facebook $fb;
 
     public function __construct(Facebook $fb)
     {
@@ -29,9 +27,7 @@ class FacebookService
     }
 
     /**
-     * @param string $redirectUrl
-     * @return string
-     * @throws \Nette\Utils\AssertionException
+     * @throws AssertionException
      */
     public function generateLoginUrl(string $redirectUrl): string
     {
@@ -41,7 +37,7 @@ class FacebookService
 
 
     /**
-     * @return GraphUser
+     * @return GraphUser<object>
      * @throws AuthenticationException
      */
     public function fetchUser(): GraphUser

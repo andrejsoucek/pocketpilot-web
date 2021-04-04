@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PP\API;
 
+use Nette\Application\AbortException;
 use Nette\Application\Responses\JsonResponse;
 use Nette\Application\UI\Presenter;
 use Nette\Utils\AssertionException;
@@ -15,11 +16,7 @@ use PP\POI\POIRead;
  */
 class POIPresenter extends Presenter
 {
-
-    /**
-     * @var POIRead
-     */
-    private $read;
+    private POIRead $read;
 
     public function __construct(POIRead $read)
     {
@@ -28,11 +25,7 @@ class POIPresenter extends Presenter
     }
 
     /**
-     * @param string $lng
-     * @param string $lat
-     * @param int $range
-     * @param bool $hasRunway
-     * @throws \Nette\Application\AbortException
+     * @throws AbortException
      */
     public function actionRead(string $lng, string $lat, int $range = 500, ?bool $hasRunway = null): void
     {
@@ -53,8 +46,7 @@ class POIPresenter extends Presenter
     }
 
     /**
-     * @param int $range
-     * @throws \Nette\Application\AbortException
+     * @throws AbortException
      */
     private function assertRange(int $range): void
     {
@@ -64,6 +56,9 @@ class POIPresenter extends Presenter
         }
     }
 
+    /**
+     * @throws AbortException
+     */
     private function assertCoordinates(string $lng, string $lat): void
     {
         try {

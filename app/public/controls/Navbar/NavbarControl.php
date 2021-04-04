@@ -12,10 +12,7 @@ use GettextTranslator\Gettext;
 class NavbarControl extends BaseControl
 {
 
-    /**
-     * @var Gettext
-     */
-    private $translator;
+    private Gettext $translator;
 
     public function __construct(Gettext $translator)
     {

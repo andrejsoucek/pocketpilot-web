@@ -6,6 +6,8 @@ namespace PP\Controls;
 
 use GettextTranslator\Gettext;
 use Nette\Application\UI\Form;
+use Nette\Application\UI\InvalidLinkException;
+use Nette\Utils\AssertionException;
 use PP\IncorrectCredentialsException;
 use PP\User\PasswordReset;
 use PP\User\UserRead;
@@ -16,22 +18,13 @@ use PP\User\UserRead;
 class PasswordRecoveryForm extends BaseControl
 {
 
-    public $onSuccess = [];
+    public array $onSuccess = [];
 
-    /**
-     * @var UserRead
-     */
-    private $userRead;
+    private UserRead $userRead;
 
-    /**
-     * @var PasswordReset
-     */
-    private $pwReset;
+    private PasswordReset $pwReset;
 
-    /**
-     * @var Gettext
-     */
-    private $translator;
+    private Gettext $translator;
 
     public function __construct(UserRead $userRead, PasswordReset $pwReset, Gettext $translator)
     {
@@ -62,8 +55,8 @@ class PasswordRecoveryForm extends BaseControl
 
     /**
      * @param Form $form
-     * @throws \Nette\Application\UI\InvalidLinkException
-     * @throws \Nette\Utils\AssertionException
+     * @throws InvalidLinkException
+     * @throws AssertionException
      * @internal
      */
     public function processForm(Form $form): void

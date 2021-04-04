@@ -15,17 +15,11 @@ use PP\SignModel;
 class RegisterForm extends BaseControl
 {
 
-    public $onSuccess = [];
+    public array $onSuccess = [];
 
-    /**
-     * @var SignModel
-     */
-    private $model;
+    private SignModel $model;
 
-    /**
-     * @var Gettext
-     */
-    private $translator;
+    private Gettext $translator;
 
     public function __construct(SignModel $model, Gettext $translator)
     {
@@ -65,7 +59,6 @@ class RegisterForm extends BaseControl
 
     /**
      * @internal
-     * @param Form $form
      */
     public function processForm(Form $form): void
     {

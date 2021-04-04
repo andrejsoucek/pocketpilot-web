@@ -4,3 +4,5 @@ temp/
 log/
 node_modules/
 www/dist/
+www/maps/*.sqlite
+dbdata

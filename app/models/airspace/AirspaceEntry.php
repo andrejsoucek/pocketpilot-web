@@ -13,25 +13,13 @@ class AirspaceEntry
 {
     use SmartObject;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private string $name;
 
-    /**
-     * @var string
-     */
-    private $type;
+    private string $type;
 
-    /**
-     * @var VerticalBounds
-     */
-    private $verticalBounds;
+    private VerticalBounds $verticalBounds;
 
-    /**
-     * @var HorizontalBounds
-     */
-    private $horizontalBounds;
+    private HorizontalBounds $horizontalBounds;
 
     public function __construct(
         string $name,
@@ -60,6 +48,9 @@ class AirspaceEntry
         return $this->verticalBounds;
     }
 
+    /**
+     * @return HorizontalBounds<RelativePosition>
+     */
     public function getHorizontalBounds(): HorizontalBounds
     {
         return $this->horizontalBounds;

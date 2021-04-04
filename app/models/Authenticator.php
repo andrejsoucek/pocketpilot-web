@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace PP;
 
+use InvalidArgumentException;
 use Nette\Security\AuthenticationException;
 use Nette\Security\IAuthenticator;
 use Nette\Security\IIdentity;
 use Nette\Security\Identity;
 use Nette\SmartObject;
+use Nette\Utils\AssertionException;
+use PP\User\Credentials;
 use PP\User\FacebookAuthenticator;
 use PP\User\FacebookCredentials;
 use PP\User\PasswordCredentials;
@@ -16,6 +19,7 @@ use PP\User\PasswordAuthenticator;
 use PP\User\TokenAuthenticator;
 use PP\User\TokenCredentials;
 use PP\User\UserEntry;
+use UnexpectedValueException;
 
 /**
  * @author Andrej Souček
@@ -24,20 +28,11 @@ class Authenticator implements IAuthenticator
 {
     use SmartObject;
 
-    /**
-     * @var PasswordAuthenticator
-     */
-    private $pwAuthenticator;
+    private PasswordAuthenticator $pwAuthenticator;
 
-    /**
-     * @var FacebookAuthenticator
-     */
-    private $fbAuthenticator;
+    private FacebookAuthenticator $fbAuthenticator;
 
-    /**
-     * @var TokenAuthenticator
-     */
-    private $tokenAuthenticator;
+    private TokenAuthenticator $tokenAuthenticator;
 
     public function __construct(
         PasswordAuthenticator $pwAuthenticator,
@@ -50,18 +45,16 @@ class Authenticator implements IAuthenticator
     }
 
     /**
-     * Performs an authentication.
-     * @param array $credentials
-     * @return IIdentity
+     * @param Credentials[] $credentials
      * @throws AuthenticationException
-     * @throws \Nette\Utils\AssertionException
+     * @throws AssertionException
      */
     public function authenticate(array $credentials): IIdentity
     {
         if (count($credentials)) {
             $credentials = $credentials[0];
         } else {
-            throw new \InvalidArgumentException('$credentials array must contain exactly one value.');
+            throw new InvalidArgumentException('$credentials array must contain exactly one value.');
         }
         try {
             switch (true) {
@@ -75,7 +68,9 @@ class Authenticator implements IAuthenticator
                     $user = $this->tokenAuthenticator->authenticate($credentials);
                     break;
                 default:
-                    throw new \UnexpectedValueException('Only PasswordCredentials and FacebookCredentials allowed.');
+                    throw new UnexpectedValueException(
+                        'Only PasswordCredentials, FacebookCredentials or TokenCredentials allowed.'
+                    );
             }
             return $this->createIdentity($user);
         } catch (IncorrectCredentialsException $e) {
@@ -83,10 +78,6 @@ class Authenticator implements IAuthenticator
         }
     }
 
-    /**
-     * @param UserEntry $user
-     * @return Identity
-     */
     private function createIdentity(UserEntry $user): Identity
     {
         return new Identity(

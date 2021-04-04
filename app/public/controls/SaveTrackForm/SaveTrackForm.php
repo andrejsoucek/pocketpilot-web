@@ -7,6 +7,7 @@ namespace PP\Controls;
 use GettextTranslator\Gettext;
 use Nette\Application\UI\Form;
 use Nette\Security\User;
+use Nette\Utils\AssertionException;
 use PP\Track\TrackCreate;
 use PP\Track\TrackEntry;
 use PP\Track\TrackRead;
@@ -18,49 +19,27 @@ use PP\Track\TrackUpdate;
 class SaveTrackForm extends BaseControl
 {
 
-    public $onSuccess = [];
+    public array $onSuccess = [];
 
-    public $onError = [];
+    public array $onError = [];
 
-    /**
-     * @var TrackRead
-     */
-    private $read;
+    private TrackCreate $create;
 
-    /**
-     * @var TrackCreate
-     */
-    private $create;
+    private TrackUpdate $update;
 
-    /**
-     * @var TrackUpdate
-     */
-    private $update;
+    private Gettext $translator;
 
-    /**
-     * @var Gettext
-     */
-    private $translator;
+    private User $user;
 
-    /**
-     * @var User
-     */
-    private $user;
-
-    /**
-     * @var TrackEntry|null
-     */
-    private $track;
+    private ?TrackEntry $track;
 
     public function __construct(
-        TrackRead $read,
         TrackCreate $create,
         TrackUpdate $update,
         Gettext $translator,
         User $user,
         ?TrackEntry $track
     ) {
-        $this->read = $read;
         $this->create = $create;
         $this->update = $update;
         $this->translator = $translator;
@@ -68,7 +47,7 @@ class SaveTrackForm extends BaseControl
         $this->track = $track;
     }
 
-    public function render()
+    public function render(): void
     {
         $this->template->setFile(__DIR__ . '/saveTrackForm.latte');
         $this->template->setTranslator($this->translator);
@@ -92,8 +71,7 @@ class SaveTrackForm extends BaseControl
 
     /**
      * @internal
-     * @param Form $form
-     * @throws \Nette\Utils\AssertionException
+     * @throws AssertionException
      */
     public function processForm(Form $form): void
     {

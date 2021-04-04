@@ -14,22 +14,13 @@ use PP\User\PasswordReset;
 class NewPasswordForm extends BaseControl
 {
 
-    public $onSuccess = [];
+    public array $onSuccess = [];
 
-    /**
-     * @var PasswordReset
-     */
-    private $pwReset;
+    private PasswordReset $pwReset;
 
-    /**
-     * @var Gettext
-     */
-    private $translator;
+    private Gettext $translator;
 
-    /**
-     * @var string
-     */
-    private $token;
+    private string $token;
 
     public function __construct(PasswordReset $pwReset, Gettext $translator, string $token)
     {
@@ -64,7 +55,6 @@ class NewPasswordForm extends BaseControl
 
     /**
      * @internal
-     * @param Form $form
      */
     public function processForm(Form $form): void
     {

@@ -1,0 +1,108 @@
+@import './marker.scss';
+@import '../../node_modules/materialize-css/sass/components/_color-variables.scss';
+@import '../../node_modules/materialize-css/sass/components/_variables.scss';
+
+#app {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+#map {
+  position: relative;
+  height: 100%;
+}
+
+#chart.modal {
+  width: 80%;
+  @media #{$medium-and-down} {
+    width: 100%;
+  }
+  @media #{$small-and-down} {
+    min-width: auto;
+    width: 100%;
+  }
+  canvas {
+    display: block;
+    background: transparent;
+  }
+}
+
+div.info {
+  position: absolute;
+  bottom: 0;
+  z-index: 1000;
+  background: white;
+  width: 400px;
+  max-height: 400px;
+  overflow: auto;
+  padding: 18px;
+  @media #{$small-and-down} {
+    min-width: auto;
+    width: 100%;
+    margin: 0;
+  }
+  .info-table-wrapper {
+    max-height: 250px;
+    overflow: auto;
+    padding: 6px 6px 0 6px;
+  }
+  table {
+    font-size: 12px;
+    &.waypoints {
+      tr, td, th {
+        padding: 0;
+        &:first-child {
+          width: 55%;
+        }
+        &:nth-child(2),
+        &:nth-child(3),
+        &:nth-child(4)
+        {
+          text-align: right;
+          width: 15%;
+        }
+      }
+    }
+    &.airspace {
+      tr, td, th {
+        padding: 0;
+        &:first-child {
+          width: 20%;
+        }
+        &:nth-child(2) {
+          width: 30%;
+        }
+        &:nth-child(3),
+        &:nth-child(4) {
+          text-align: right;
+          width: 25%;
+        }
+      }
+    }
+  }
+  & .controls-speed {
+    padding-top: 7px;
+    padding-left: 5px;
+    & > input {
+      width: 2.2rem;
+      height: 2rem;
+    }
+  }
+  & .controls-buttons {
+    padding-top: 10px;
+  }
+  & .row {
+    margin-bottom: 10px;
+  }
+  & ul.tabs {
+    height: 26px;
+
+    .tab {
+      line-height: 26px;
+      height: 26px;
+    }
+  }
+}

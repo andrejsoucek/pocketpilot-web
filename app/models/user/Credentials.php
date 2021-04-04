@@ -5,7 +5,7 @@ namespace PP\User;
 interface Credentials
 {
 
-    public function getEmail();
+    public function getEmail(): string;
 
-    public function getAuthString();
+    public function getAuthString(): string;
 }

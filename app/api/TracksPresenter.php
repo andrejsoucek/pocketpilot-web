@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PP\API;
 
+use Nette\Application\AbortException;
+use Nette\Application\ForbiddenRequestException;
 use Nette\Application\Responses\JsonResponse;
 use Nette\Application\UI\Presenter;
 use PP\Track\TrackRead;
@@ -13,11 +15,7 @@ use PP\Track\TrackRead;
  */
 class TracksPresenter extends Presenter
 {
-
-    /**
-     * @var TrackRead
-     */
-    private $read;
+    private TrackRead $read;
 
     public function __construct(TrackRead $read)
     {
@@ -25,9 +23,13 @@ class TracksPresenter extends Presenter
         $this->read = $read;
     }
 
+    /**
+     * @throws AbortException
+     * @throws ForbiddenRequestException
+     */
     public function checkRequirements($element): void
     {
-        parent::checkRequirements($this->getReflection());
+        parent::checkRequirements(static::getReflection());
         if (!$this->getUser()->isLoggedIn()) {
             $this->getHttpResponse()->setCode(403);
             $this->sendResponse(new JsonResponse(['error' => 'User not authenticated']));
@@ -35,7 +37,7 @@ class TracksPresenter extends Presenter
     }
 
     /**
-     * @throws \Nette\Application\AbortException
+     * @throws AbortException
      */
     public function actionRead(): void
     {

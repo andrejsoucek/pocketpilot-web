@@ -14,20 +14,12 @@ use PP\Controls\POIImportFormFactory;
  */
 class POIPresenter extends AppPresenter
 {
-    use Authentication {
-        Authentication::checkRequirements as commonAuthentication;
-    }
+    use AdminAuthentication;
     use Navbar;
 
-    /**
-     * @var POIImportFormFactory
-     */
-    private $formFactory;
+    private POIImportFormFactory $formFactory;
 
-    /**
-     * @var POIControlFactory
-     */
-    private $POIControlFactory;
+    private POIControlFactory $POIControlFactory;
 
     public function __construct(
         POIImportFormFactory $formFactory,
@@ -38,21 +30,13 @@ class POIPresenter extends AppPresenter
         $this->POIControlFactory = $POIControlFactory;
     }
 
-    public function checkRequirements($element): void
-    {
-        $this->commonAuthentication($element);
-        if (!$this->user->isInRole('admin')) {
-            $this->flashMessage($this->translator->translate('Access denied.'));
-            $this->redirect('Dashboard:default');
-        }
-    }
-
     protected function createComponentForm(): POIImportForm
     {
         $c = $this->formFactory->create();
-        $c->onError[] = function ($m) {
+        $c->onError[] = function ($m): void {
             $this->flashMessage($m);
         };
+
         return $c;
     }
 

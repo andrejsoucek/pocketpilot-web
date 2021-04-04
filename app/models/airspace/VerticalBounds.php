@@ -10,25 +10,13 @@ class VerticalBounds
 {
     use SmartObject;
 
-    /**
-     * @var int
-     */
-    private $lowerBound;
+    private int $lowerBound;
 
-    /**
-     * @var string
-     */
-    private $lowerBoundDatum;
+    private string $lowerBoundDatum;
 
-    /**
-     * @var int
-     */
-    private $upperBound;
+    private int $upperBound;
 
-    /**
-     * @var string
-     */
-    private $upperBoundDatum;
+    private string $upperBoundDatum;
 
     public function __construct(int $lowerBound, string $lowerBoundDatum, int $upperBound, string $upperBoundDatum)
     {

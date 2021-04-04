@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PP\Presenters;
 
 use GettextTranslator\Gettext;
+use Nette\Application\AbortException;
 use Nette\Application\UI\Form;
 use Nette\Security\AuthenticationException;
 use PP\Controls\LoginForm;
@@ -22,20 +23,11 @@ use PP\User\PasswordCredentials;
 class SignPresenter extends AppPresenter
 {
 
-    /**
-     * @var SignModel
-     */
-    private $model;
+    private SignModel $model;
 
-    /**
-     * @var LoginFormFactory
-     */
-    private $loginFormFactory;
+    private LoginFormFactory $loginFormFactory;
 
-    /**
-     * @var RegisterFormFactory
-     */
-    private $registerFormFactory;
+    private RegisterFormFactory $registerFormFactory;
 
     public function __construct(
         SignModel $model,
@@ -49,7 +41,7 @@ class SignPresenter extends AppPresenter
     }
 
     /**
-     * @throws \Nette\Application\AbortException
+     * @throws AbortException
      */
     public function actionFbLogin(): void
     {
@@ -62,7 +54,7 @@ class SignPresenter extends AppPresenter
     }
 
     /**
-     * @throws \Nette\Application\AbortException
+     * @throws AbortException
      */
     public function actionLogOut(): void
     {
@@ -94,19 +86,21 @@ class SignPresenter extends AppPresenter
     protected function createComponentLoginForm(): LoginForm
     {
         $form = $this->loginFormFactory->create($this->model->generateLoginUrl($this->link('//fbLogin')));
-        $form->onSuccess[] = function () {
+        $form->onSuccess[] = function (): void {
             $this->redirect('Dashboard:');
         };
+
         return $form;
     }
 
     protected function createComponentRegisterForm(): RegisterForm
     {
         $form = $this->registerFormFactory->create();
-        $form->onSuccess[] = function () {
+        $form->onSuccess[] = function (): void {
             $this->flashMessage($this->translator->translate('Sign up successful, now you can log in.'));
             $this->redirect('Homepage:');
         };
+
         return $form;
     }
 }

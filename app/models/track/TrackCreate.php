@@ -7,7 +7,10 @@ namespace PP\Track;
 use Nette\Database\Context;
 use Nette\Database\Table\ActiveRow;
 use Nette\SmartObject;
+use Nette\Utils\AssertionException;
 use Nette\Utils\Validators;
+use PDOException;
+use RuntimeException;
 
 /**
  * @author Andrej Souček
@@ -16,8 +19,7 @@ class TrackCreate
 {
     use SmartObject;
 
-    /** @var Context */
-    private $database;
+    private Context $database;
 
     public function __construct(Context $database)
     {
@@ -25,14 +27,10 @@ class TrackCreate
     }
 
     /**
-     * @param string $trackName
-     * @param int $userId
-     * @param array $waypoints
-     * @return ActiveRow|null
-     * @throws \Nette\Utils\AssertionException
-     * @throws \RuntimeException
+     * @throws AssertionException
+     * @throws RuntimeException
      */
-    public function process(string $trackName, int $userId, array $waypoints): ?ActiveRow
+    public function process(string $trackName, int $userId, array $waypoints): ActiveRow
     {
         Validators::assert($trackName, 'string:1..');
         Validators::assert($userId, 'numericint:1..');
@@ -42,8 +40,8 @@ class TrackCreate
                 TrackDatabaseDef::COLUMN_USER_ID => $userId,
                 TrackDatabaseDef::COLUMN_TRACK => $this->database::literal($this->prepareQuery($waypoints))
             ]);
-        } catch (\PDOException $e) {
-            throw new \RuntimeException($e->getMessage(), (int)$e->getCode(), $e);
+        } catch (PDOException $e) {
+            throw new RuntimeException($e->getMessage(), (int)$e->getCode(), $e);
         }
     }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PP\API;
 
+use Nette\Application\AbortException;
 use Nette\Application\Responses\JsonResponse;
 use Nette\Application\UI\Presenter;
 use PP\Airspace\AirspaceEntry;
@@ -15,11 +16,7 @@ use PP\Airspace\RelativePosition;
  */
 class AirspacePresenter extends Presenter
 {
-
-    /**
-     * @var AirspaceRead
-     */
-    private $read;
+    private AirspaceRead $read;
 
     public function __construct(AirspaceRead $read)
     {
@@ -28,8 +25,7 @@ class AirspacePresenter extends Presenter
     }
 
     /**
-     * @params string $params
-     * @throws \Nette\Application\AbortException
+     * @throws AbortException
      */
     public function actionRead(string $path): void
     {

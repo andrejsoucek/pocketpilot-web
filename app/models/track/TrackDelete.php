@@ -6,6 +6,7 @@ namespace PP\Track;
 
 use Nette\Database\Context;
 use Nette\SmartObject;
+use Nette\Utils\AssertionException;
 use Nette\Utils\Validators;
 use PDOException;
 use RuntimeException;
@@ -17,8 +18,7 @@ class TrackDelete
 {
     use SmartObject;
 
-    /** @var Context */
-    private $database;
+    private Context $database;
 
     public function __construct(Context $database)
     {
@@ -29,7 +29,7 @@ class TrackDelete
      * @param int $trackId
      * @param int $userId
      * @return int
-     * @throws \Nette\Utils\AssertionException
+     * @throws AssertionException
      */
     public function process(int $trackId, int $userId): int
     {

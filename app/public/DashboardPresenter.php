@@ -16,10 +16,7 @@ class DashboardPresenter extends AppPresenter
     use Authentication;
     use Navbar;
 
-    /**
-     * @var DashboardRead
-     */
-    private $read;
+    private DashboardRead $read;
 
     public function __construct(DashboardRead $read)
     {
@@ -27,7 +24,7 @@ class DashboardPresenter extends AppPresenter
         $this->read = $read;
     }
 
-    public function renderDefault()
+    public function renderDefault(): void
     {
         $this->template->items = $this->getItems();
     }

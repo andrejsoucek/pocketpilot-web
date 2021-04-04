@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PP\Controls;
 
 use GettextTranslator\Gettext;
+use InvalidArgumentException;
 use Nette\Application\UI\Form;
 use PP\POI\POIImporter;
 use RuntimeException;
@@ -16,20 +17,11 @@ use UnexpectedValueException;
 class POIImportForm extends BaseControl
 {
 
-    /**
-     * @var array
-     */
-    public $onError = [];
+    public array $onError = [];
 
-    /**
-     * @var POIImporter
-     */
-    private $POIImporter;
+    private POIImporter $POIImporter;
 
-    /**
-     * @var Gettext
-     */
-    private $translator;
+    private Gettext $translator;
 
     public function __construct(POIImporter $POIImporter, Gettext $translator)
     {
@@ -59,6 +51,8 @@ class POIImportForm extends BaseControl
         try {
             $this->POIImporter->process($form->values->file);
         } catch (UnexpectedValueException $e) {
+            $this->onError('empty file');
+        } catch (InvalidArgumentException $e) {
             $this->onError($this->translator->translate('Unsupported file type.'));
         } catch (RuntimeException $e) {
             $this->onError($e->getMessage());

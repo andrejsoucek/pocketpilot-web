@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace PP\API;
 
+use Nette\Application\AbortException;
 use Nette\Application\Responses\JsonResponse;
 use Nette\Application\UI\Presenter;
 use Nette\Security\AuthenticationException;
 use PP\User\TokenCredentials;
+use RuntimeException;
 
 /**
  * @author Andrej Souček
@@ -16,13 +18,17 @@ class LoginPresenter extends Presenter
 {
 
     /**
-     * @throws \Nette\Application\AbortException
+     * @throws AbortException
      */
     public function actionCreate(): void
     {
         try {
-            $email = $this->getRequest()->getPost('email');
-            $key = $this->getRequest()->getPost('key');
+            $req = $this->getRequest();
+            if ($req === null) {
+                throw new RuntimeException();
+            }
+            $email = $req->getPost('email');
+            $key = $req->getPost('key');
             $this->getUser()->login(new TokenCredentials($email, $key));
         } catch (AuthenticationException $e) {
             $this->getHttpResponse()->setCode(401);

@@ -1,0 +1,57 @@
+version: '3.4'
+services:
+  web:
+    container_name: pocketpilot_web_dev
+    environment:
+      DEBUG_MODE: 'true'
+    build:
+      context: .
+      target: develop
+      dockerfile: .docker/app/Dockerfile
+      args:
+        USER_ID: ${USER_ID}
+        GROUP_ID: ${GROUP_ID}
+    links:
+      - postgis
+      - webpack
+    ports:
+      - "8888:80"
+    volumes:
+      - ./app:/pocketpilot/app
+      - ./www:/pocketpilot/www
+      - ./log:/pocketpilot/log
+      - ./temp:/pocketpilot/temp
+      - ./composer.json:/pocketpilot/composer.json
+      - ./composer.lock:/pocketpilot/composer.lock
+      - ./vendor:/pocketpilot/vendor
+    depends_on:
+      - 'postgis'
+  webpack:
+    container_name: pocketpilot_webpack_dev
+    build:
+      context: .docker/webpack
+      dockerfile: Dockerfile
+      args:
+        USER_ID: ${USER_ID}
+        GROUP_ID: ${GROUP_ID}
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./assets:/pocketpilot/assets
+      - ./www:/pocketpilot/www
+      - ./.eslintrc.js:/pocketpilot/.eslintrc.js
+      - ./webpack.config.js:/pocketpilot/webpack.config.js
+      - ./package.json:/pocketpilot/package.json
+      - ./package-lock.json:/pocketpilot/package-lock.json
+      - ./node_modules:/pocketpilot/node_modules
+  postgis:
+    container_name: pocketpilot_postgis_dev
+    image: postgis/postgis:13-3.1
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: toor
+      POSTGRES_DB: pocketpilot
+    volumes:
+      - ./.docker/fixtures/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./.docker/fixtures/airspace.sql:/docker-entrypoint-initdb.d/airspace.sql
+      - ./.docker/fixtures/elevation.sql:/docker-entrypoint-initdb.d/elevation.sql

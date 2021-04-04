@@ -6,21 +6,16 @@ namespace PP\User;
 
 use Nette\Database\Context;
 use Nette\SmartObject;
+use Nette\Utils\AssertionException;
 use PP\IncorrectCredentialsException;
 
 class TokenAuthenticator
 {
     use SmartObject;
 
-    /**
-     * @var Context
-     */
-    private $database;
+    private Context $database;
 
-    /**
-     * @var UserRead
-     */
-    private $read;
+    private UserRead $read;
 
     public function __construct(Context $database, UserRead $read)
     {
@@ -29,11 +24,8 @@ class TokenAuthenticator
     }
 
     /**
-     * Performs an authentication.
-     * @param TokenCredentials $credentials
-     * @return UserEntry
      * @throws IncorrectCredentialsException
-     * @throws \Nette\Utils\AssertionException
+     * @throws AssertionException
      */
     public function authenticate(TokenCredentials $credentials): UserEntry
     {
@@ -41,9 +33,10 @@ class TokenAuthenticator
         $row = $this->database->table(UserDatabaseDef::TABLE_NAME)
             ->where(UserDatabaseDef::COLUMN_ID, $entry->getId())
             ->fetch();
-        if ($credentials->getAuthString() !== $row->token) {
+        if ($row === null || $credentials->getAuthString() !== $row->token) {
             throw new IncorrectCredentialsException('Token is incorrect.');
         }
+
         return $entry;
     }
 }

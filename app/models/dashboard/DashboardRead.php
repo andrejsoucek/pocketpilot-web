@@ -7,6 +7,8 @@ namespace PP\Dashboard;
 use Nette\Database\Context;
 use Nette\Database\IRow;
 use Nette\SmartObject;
+use PDOException;
+use RuntimeException;
 
 /**
  * @author Andrej Souček
@@ -15,8 +17,7 @@ class DashboardRead
 {
     use SmartObject;
 
-    /** @var Context */
-    private $database;
+    private Context $database;
 
     public function __construct(Context $database)
     {
@@ -24,8 +25,7 @@ class DashboardRead
     }
 
     /**
-     * @return array
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function fetchAll(): array
     {
@@ -36,15 +36,11 @@ class DashboardRead
                 $ret[$row[DashboardDatabaseDef::COLUMN_ID]] = $this->toEntity($row);
             }
             return $ret;
-        } catch (\PDOException $e) {
-            throw new \RuntimeException($e->getMessage(), (int)$e->getCode(), $e);
+        } catch (PDOException $e) {
+            throw new RuntimeException($e->getMessage(), (int)$e->getCode(), $e);
         }
     }
 
-    /**
-     * @param IRow $data
-     * @return DashboardEntry
-     */
     private function toEntity(IRow $data): DashboardEntry
     {
         return new DashboardEntry(

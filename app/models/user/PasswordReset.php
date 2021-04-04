@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace PP\User;
 
+use Exception;
 use GettextTranslator\Gettext;
 use Nette\Application\LinkGenerator;
+use Nette\Application\UI\InvalidLinkException;
 use Nette\Database\Context;
 use Nette\Mail\IMailer;
 use Nette\Mail\Message;
@@ -22,30 +24,15 @@ class PasswordReset
 {
     use SmartObject;
 
-    /**
-     * @var Context
-     */
-    private $database;
+    private Context $database;
 
-    /**
-     * @var Passwords
-     */
-    private $passwords;
+    private Passwords $passwords;
 
-    /**
-     * @var Gettext
-     */
-    private $translator;
+    private Gettext $translator;
 
-    /**
-     * @var LinkGenerator
-     */
-    private $linkGenerator;
+    private LinkGenerator $linkGenerator;
 
-    /**
-     * @var IMailer
-     */
-    private $mailer;
+    private IMailer $mailer;
 
     public function __construct(
         Context $database,
@@ -61,34 +48,29 @@ class PasswordReset
         $this->mailer = $mailer;
     }
 
-    /**
-     * @param string $token
-     * @return bool true if token is valid
-     */
     public function isTokenValid(string $token): bool
     {
         if (!TokenProcessor::isTokenValid($token)) {
             return false;
-        } else {
-            try {
-                $tokenHash = TokenProcessor::calculateTokenHash($token);
-                $record = $this->database->table(PasswordResetDatabaseDef::TABLE_NAME)
-                    ->where(PasswordResetDatabaseDef::COLUMN_TOKEN, $tokenHash)
-                    ->fetch();
-                if (!$record || TokenProcessor::isTokenExpired($record->offsetGet('created'))) {
-                    return false;
-                }
-            } catch (\Exception $e) {
+        }
+
+        try {
+            $tokenHash = TokenProcessor::calculateTokenHash($token);
+            $record = $this->database->table(PasswordResetDatabaseDef::TABLE_NAME)
+                ->where(PasswordResetDatabaseDef::COLUMN_TOKEN, $tokenHash)
+                ->fetch();
+            if (!$record || TokenProcessor::isTokenExpired($record->offsetGet('created'))) {
                 return false;
             }
+        } catch (Exception $e) {
+            return false;
         }
+
         return true;
     }
 
     /**
-     * @param string $token
-     * @param string $pw
-     * @throws \Exception
+     * @throws Exception
      */
     public function changePassword(string $token, string $pw): void
     {
@@ -108,9 +90,8 @@ class PasswordReset
     }
 
     /**
-     * @param UserEntry $user
      * @throws SendException
-     * @throws \Nette\Application\UI\InvalidLinkException
+     * @throws InvalidLinkException
      */
     public function sendLinkTo(UserEntry $user): void
     {
@@ -122,7 +103,7 @@ class PasswordReset
     /**
      * @param int $userId
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     private function createAndSaveToken(int $userId): string
     {
@@ -135,7 +116,7 @@ class PasswordReset
         return $tokenForLink;
     }
 
-    private function createMail($to, $link): Message
+    private function createMail(string $to, string $link): Message
     {
         $mail = new Message();
         $s1 = $this->translator->translate("Hello");

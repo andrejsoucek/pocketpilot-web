@@ -20,10 +20,7 @@ class SyncPresenter extends AppPresenter
     use Authentication;
     use Navbar;
 
-    /**
-     * @var ApiKeyFormFactory
-     */
-    private $apiKeyFormFactory;
+    private ApiKeyFormFactory $apiKeyFormFactory;
 
     public function __construct(ApiKeyFormFactory $apiKeyFormFactory)
     {
@@ -34,9 +31,10 @@ class SyncPresenter extends AppPresenter
     protected function createComponentForm(): ApiKeyForm
     {
         $form = $this->apiKeyFormFactory->create();
-        $form->onSuccess[] = function () {
+        $form->onSuccess[] = function (): void {
             $this->redirect('this');
         };
+
         return $form;
     }
 }

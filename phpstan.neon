@@ -1,15 +1,28 @@
 includes:
-	- ./vendor/phpstan/phpstan-nette/extension.neon
+    - ./vendor/phpstan/phpstan-nette/extension.neon
 
 parameters:
-	autoload_directories:
-		- ./app
-	paths:
-		- ./app
-	universalObjectCratesClasses:
-		- Nette\Security\IIdentity
-	inferPrivatePropertyTypeFromConstructor: true
-	ignoreErrors:
-		- '%Parameter #1 $user of method Nette\\Security\\User::login() expects Nette\\Security\\IIdentity|string, PP\\User\\PasswordCredentials given.%'
-		- '%Parameter #1 $user of method Nette\\Security\\User::login() expects Nette\\Security\\IIdentity|string, PP\\User\\FacebookCredentials given.%'
-		- '%Parameter #1 $user of method Nette\\Security\\User::login() expects Nette\\Security\\IIdentity|string, PP\\User\\TokenCredentials given.%'
+    scanDirectories:
+        - ./app
+    paths:
+        - ./app
+    excludePaths:
+        - ./app/public/Error4xxPresenter.php
+    universalObjectCratesClasses:
+        - Nette\Security\IIdentity
+    inferPrivatePropertyTypeFromConstructor: true
+    checkMissingIterableValueType: false
+    ignoreErrors:
+        -
+            message: '/Parameter #1 \$user of method Nette\\Security\\User::login\(\) expects Nette\\Security\\IIdentity\|string.+/'
+            path: ./app
+            count: 3
+        -
+            message: '/Method (.+) has parameter \$element with no typehint specified./'
+            path: ./app
+        -
+            message: '/Cannot access property (.+) on Nette\\Security\\IIdentity\|null./'
+            path: ./app/public
+        -
+            message: '/Method (.+) should return Nette\\Database\\Table\\ActiveRow but returns bool\|int\|Nette\\Database\\Table\\ActiveRow./'
+            path: ./app

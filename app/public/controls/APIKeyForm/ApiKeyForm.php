@@ -16,27 +16,15 @@ use PP\User\UserUpdate;
 class ApiKeyForm extends BaseControl
 {
 
-    public $onSuccess = [];
+    public array $onSuccess = [];
 
-    /**
-     * @var UserRead
-     */
-    private $read;
+    private UserRead $read;
 
-    /**
-     * @var UserUpdate
-     */
-    private $update;
+    private UserUpdate $update;
 
-    /**
-     * @var Gettext
-     */
-    private $translator;
+    private Gettext $translator;
 
-    /**
-     * @var User
-     */
-    private $user;
+    private User $user;
 
     public function __construct(UserRead $read, UserUpdate $update, Gettext $translator, User $user)
     {
@@ -69,8 +57,11 @@ class ApiKeyForm extends BaseControl
      */
     public function processForm(): void
     {
-        $this->update->regenerateTokenFor($this->user->getIdentity());
-        $this->onSuccess();
+        $user = $this->user->getIdentity();
+        if ($user !== null) {
+            $this->update->regenerateTokenFor($user);
+            $this->onSuccess();
+        }
     }
 
     /**

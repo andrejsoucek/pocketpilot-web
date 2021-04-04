@@ -12,7 +12,7 @@ trait Authentication
 
     public function checkRequirements($element): void
     {
-        parent::checkRequirements($this->getReflection());
+        parent::checkRequirements(static::getReflection());
         if (!$this->user->isLoggedIn()) {
             $this->redirect('Sign:');
         }

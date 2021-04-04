@@ -14,40 +14,19 @@ class TrackEntry
 {
     use SmartObject;
 
-    /**
-     * @var int
-     */
-    private $id;
+    private int $id;
 
-    /**
-     * @var string
-     */
-    private $track;
+    private string $track;
 
-    /**
-     * @var float
-     */
-    private $length;
+    private float $length;
 
-    /**
-     * @var int
-     */
-    private $userId;
+    private int $userId;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private string $name;
 
-    /**
-     * @var DateTime
-     */
-    private $created;
+    private DateTime $created;
 
-    /**
-     * @var string
-     */
-    private $hash;
+    private string $hash;
 
     public function __construct(
         int $id,
@@ -67,57 +46,36 @@ class TrackEntry
         $this->hash = $hash;
     }
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return float
-     */
     public function getLength(): float
     {
         return $this->length;
     }
 
-    /**
-     * @return string
-     */
     public function getTrack(): string
     {
         return $this->track;
     }
 
-    /**
-     * @return int
-     */
     public function getUserId(): int
     {
         return $this->userId;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return DateTime
-     */
     public function getCreated(): DateTime
     {
         return $this->created;
     }
 
-    /**
-     * @return string
-     */
     public function getHash(): string
     {
         return $this->hash;

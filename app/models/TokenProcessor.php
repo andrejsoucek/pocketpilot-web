@@ -21,16 +21,13 @@ class TokenProcessor
     /**
      * The token must be strong enough, so we can store its unsalted hash
      * with a fast algorithm (sha256) in the database. Do not go beneath 20.
-     *
-     * @var int
      */
-    private static $tokenLength = 32;
+    private static int $tokenLength = 32;
 
     /**
      * Tokens expires after 8 hours
-     * @var string
      */
-    private static $expiryInterval = 'PT8H';
+    private static string $expiryInterval = 'PT8H';
 
     /**
      * Generates a new token, that can be used to build a password reset link.

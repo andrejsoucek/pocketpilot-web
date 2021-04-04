@@ -6,7 +6,10 @@ namespace PP\Track;
 
 use Nette\Database\Context;
 use Nette\SmartObject;
+use Nette\Utils\AssertionException;
 use Nette\Utils\Validators;
+use PDOException;
+use RuntimeException;
 
 /**
  * @author Andrej Souček
@@ -15,8 +18,7 @@ class TrackUpdate
 {
     use SmartObject;
 
-    /** @var Context */
-    private $database;
+    private Context $database;
 
     public function __construct(Context $database)
     {
@@ -28,8 +30,8 @@ class TrackUpdate
      * @param string $trackName
      * @param array $waypoints
      * @return int
-     * @throws \Nette\Utils\AssertionException
-     * @throws \RuntimeException
+     * @throws AssertionException
+     * @throws RuntimeException
      */
     public function process(int $trackId, string $trackName, array $waypoints): int
     {
@@ -42,8 +44,8 @@ class TrackUpdate
                     TrackDatabaseDef::COLUMN_NAME => $trackName,
                     TrackDatabaseDef::COLUMN_TRACK => $this->database::literal($this->prepareQuery($waypoints))
                 ]);
-        } catch (\PDOException $e) {
-            throw new \RuntimeException($e->getMessage(), (int)$e->getCode(), $e);
+        } catch (PDOException $e) {
+            throw new RuntimeException($e->getMessage(), (int)$e->getCode(), $e);
         }
     }
 

@@ -16,22 +16,13 @@ use PP\User\PasswordCredentials;
 class LoginForm extends BaseControl
 {
 
-    public $onSuccess = [];
+    public array $onSuccess = [];
 
-    /**
-     * @var Gettext
-     */
-    private $translator;
+    private Gettext $translator;
 
-    /**
-     * @var User
-     */
-    private $user;
+    private User $user;
 
-    /**
-     * @var string
-     */
-    private $fbLoginUrl;
+    private string $fbLoginUrl;
 
     public function __construct(Gettext $translator, User $user, string $fbLoginUrl)
     {
@@ -76,7 +67,6 @@ class LoginForm extends BaseControl
     }
 
     /**
-     * @param Form $form
      * @internal
      */
     public function processForm(Form $form): void

@@ -16,8 +16,7 @@ class TerrainRead
 {
     use SmartObject;
 
-    /** @var Context */
-    private $database;
+    private Context $database;
 
     public function __construct(Context $database)
     {
@@ -25,7 +24,7 @@ class TerrainRead
     }
 
     /**
-     * @param array<array<float, float>> $latlngs
+     * @param array<int, array<int, string>> $latlngs
      * @return array<TerrainEntry>
      */
     public function fetchTerrain(array $latlngs): array

@@ -1,0 +1,37 @@
+parameters:
+	facebook:
+		app_id: 'xxxxxxxxx'
+		app_secret: 'yyyyyyyyyyyyyyy'
+database:
+	dsn: 'pgsql:host=postgis;dbname=pocketpilot'
+	user: postgres
+	password: toor
+	debugger: true
+	options:
+		lazy: yes
+http:
+	csp:
+		default-src: none
+		img-src:
+			- self
+			- play.google.com
+			- *.openstreetmap.org
+			- *.openflightmaps.org
+			- 'data:'
+		script-src:
+			- unsafe-eval
+			- unsafe-inline
+		style-src:
+			- self
+			- unsafe-inline
+		connect-src:
+			- self
+			- *.openstreetmap.org
+	frames: DENY
+tracy:
+	bar:
+		- Nextras\MailPanel\MailPanel(%tempDir%/mail-panel-latte)
+services:
+	nette.mailer:
+		class: Nette\Mail\IMailer
+		factory: Nextras\MailPanel\FileMailer(%tempDir%/mail-panel-mails)

@@ -17,46 +17,37 @@ use PP\User\UserRead;
  */
 class PasswordRecoveryPresenter extends AppPresenter
 {
+    private PasswordReset $pwReset;
 
-    /**
-     * @var UserRead
-     */
-    private $userRead;
+    private PasswordRecoveryFormFactory $passwordRecoveryFormFactory;
 
-    /**
-     * @var PasswordReset
-     */
-    private $pwReset;
-
-    /**
-     * @var PasswordRecoveryFormFactory
-     */
-    private $passwordRecoveryFormFactory;
-
-    /**
-     * @var NewPasswordFormFactory
-     */
-    private $newPasswordFormFactory;
+    private NewPasswordFormFactory $newPasswordFormFactory;
 
     public function __construct(
-        UserRead $userRead,
         PasswordReset $pwReset,
         PasswordRecoveryFormFactory $passwordRecoveryFormFactory,
         NewPasswordFormFactory $newPasswordFormFactory
     ) {
         parent::__construct();
-        $this->userRead = $userRead;
         $this->pwReset = $pwReset;
         $this->passwordRecoveryFormFactory = $passwordRecoveryFormFactory;
         $this->newPasswordFormFactory = $newPasswordFormFactory;
     }
 
-    public function renderDefault()
+    public function actionReset(?string $token): void
+    {
+        if ($token !== null && !$this->pwReset->isTokenValid($token)) {
+            $this->flashMessage($this->translator->translate('Invalid token.'));
+            $this->redirect('Homepage:');
+        }
+    }
+
+    public function renderDefault(): void
     {
         $this->template->lang = $this->getLang();
     }
 
-    public function renderReset()
+    public function renderReset(): void
     {
         $this->template->lang = $this->getLang();
     }
@@ -66,33 +57,27 @@ class PasswordRecoveryPresenter extends AppPresenter
         return $this->translator->getLang();
     }
 
-    public function actionReset($token): void
-    {
-        if (isset($token) && !$this->pwReset->isTokenValid($token)) {
-            $this->flashMessage($this->translator->translate('Invalid token.'));
-            $this->redirect('Homepage:');
-        }
-    }
-
     protected function createComponentRecoveryForm(): PasswordRecoveryForm
     {
         $form = $this->passwordRecoveryFormFactory->create();
-        $form->onSuccess[] = function (UserEntry $user) {
+        $form->onSuccess[] = function (UserEntry $user): void {
             $this->flashMessage($this->translator->translate("An e-mail has been sent to %s.", $user->getEmail()));
             $this->redirect('Sign:');
         };
+
         return $form;
     }
 
     protected function createComponentNewPasswordForm(): NewPasswordForm
     {
         $form = $this->newPasswordFormFactory->create($this->getParameter('token'));
-        $form->onSuccess[] = function () {
+        $form->onSuccess[] = function (): void {
             $this->flashMessage(
                 $this->translator->translate('Password change has been successful. Now you can log in.')
             );
             $this->redirect('Homepage:');
         };
+
         return $form;
     }
 }

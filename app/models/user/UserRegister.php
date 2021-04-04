@@ -9,6 +9,7 @@ use Nette\Database\Table\ActiveRow;
 use Nette\Database\UniqueConstraintViolationException;
 use Nette\Security\Passwords;
 use Nette\SmartObject;
+use Nette\Utils\AssertionException;
 use Nette\Utils\Validators;
 use PP\IncorrectCredentialsException;
 
@@ -19,13 +20,9 @@ class UserRegister
 {
     use SmartObject;
 
-    /** @var Context */
-    private $database;
+    private Context $database;
 
-    /**
-     * @var Passwords
-     */
-    private $passwords;
+    private Passwords $passwords;
 
     public function __construct(Context $database, Passwords $passwords)
     {
@@ -34,16 +31,15 @@ class UserRegister
     }
 
     /**
-     * @param string $username
-     * @param string $email
-     * @param string|null $fbUid
-     * @param string $password
-     * @return ActiveRow
      * @throws IncorrectCredentialsException
-     * @throws \Nette\Utils\AssertionException
+     * @throws AssertionException
      */
-    public function process(string $username, string $email, string $fbUid = null, string $password = null): ?ActiveRow
-    {
+    public function process(
+        string $username,
+        string $email,
+        ?string $fbUid = null,
+        ?string $password = null
+    ): ActiveRow {
         Validators::assert($username, 'string:1..');
         Validators::assert($email, 'email');
         Validators::assert($password, 'string:1..|null');

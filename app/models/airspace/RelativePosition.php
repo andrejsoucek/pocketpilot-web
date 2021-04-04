@@ -6,16 +6,9 @@ namespace PP\Airspace;
 
 class RelativePosition
 {
+    private float $in;
 
-    /**
-     * @var float
-     */
-    private $in;
-
-    /**
-     * @var float
-     */
-    private $out;
+    private float $out;
 
     public function __construct(float $in, float $out)
     {
@@ -23,17 +16,11 @@ class RelativePosition
         $this->out = $out <= $in ? 1 : $out;
     }
 
-    /**
-     * @return float
-     */
     public function getIn(): float
     {
         return $this->in;
     }
 
-    /**
-     * @return float
-     */
     public function getOut(): float
     {
         return $this->out;

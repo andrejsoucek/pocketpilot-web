@@ -16,17 +16,13 @@ class UserUpdate
 {
     use SmartObject;
 
-    /** @var Context */
-    private $database;
+    private Context $database;
 
     public function __construct(Context $database)
     {
         $this->database = $database;
     }
 
-    /**
-     * @param UserChanges $changes
-     */
     public function process(UserChanges $changes): void
     {
         $this->database->table(UserDatabaseDef::TABLE_NAME)
@@ -34,16 +30,13 @@ class UserUpdate
             ->update($this->toArray($changes));
     }
 
-    /**
-     * @param IIdentity $user
-     * @return string
-     */
     public function regenerateTokenFor(IIdentity $user): string
     {
         $newToken = md5($user->username . new DateTime());
         $this->database->table(UserDatabaseDef::TABLE_NAME)
             ->where(UserDatabaseDef::COLUMN_ID, $user->getId())
             ->update([UserDatabaseDef::COLUMN_TOKEN => md5($user->username . new DateTime())]);
+
         return $newToken;
     }
 
@@ -58,6 +51,7 @@ class UserUpdate
             UserDatabaseDef::COLUMN_EMAIL => $changes->getEmail(),
             UserDatabaseDef::COLUMN_ROLE => $changes->getRole()
         ];
+
         return array_filter($xs);
     }
 }

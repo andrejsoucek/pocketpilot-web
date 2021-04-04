@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PP\User;
 
 use Nette\SmartObject;
+use Nette\Utils\AssertionException;
 use Nette\Utils\Validators;
 
 /**
@@ -14,29 +15,16 @@ class UserChanges
 {
     use SmartObject;
 
-    /**
-     * @var int
-     */
-    private $id;
+    private int $id;
+
+    private string $name;
+
+    private string $email;
+
+    private string $role;
 
     /**
-     * @var string
-     */
-    private $name;
-
-    /**
-     * @var string
-     */
-    private $email;
-
-    /**
-     * @var string
-     */
-    private $role;
-
-    /**
-     * @param int $id
-     * @throws \Nette\Utils\AssertionException
+     * @throws AssertionException
      */
     public function __construct(int $id)
     {
@@ -44,25 +32,18 @@ class UserChanges
         $this->id = $id;
     }
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
     /**
-     * @param string $name
-     * @throws \Nette\Utils\AssertionException
+     * @throws AssertionException
      */
     public function setName(string $name): void
     {
@@ -70,17 +51,13 @@ class UserChanges
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
     public function getEmail(): string
     {
         return $this->email;
     }
 
     /**
-     * @param string $email
-     * @throws \Nette\Utils\AssertionException
+     * @throws AssertionException
      */
     public function setEmail(string $email): void
     {
@@ -88,9 +65,6 @@ class UserChanges
         $this->email = $email;
     }
 
-    /**
-     * @return string
-     */
     public function getRole(): string
     {
         return $this->role;
@@ -98,7 +72,7 @@ class UserChanges
 
     /**
      * @param string $role
-     * @throws \Nette\Utils\AssertionException
+     * @throws AssertionException
      */
     public function setRole(string $role): void
     {

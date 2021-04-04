@@ -16,20 +16,11 @@ class FacebookAuthenticator
 {
     use SmartObject;
 
-    /**
-     * @var Context
-     */
-    private $database;
+    private Context $database;
 
-    /**
-     * @var UserRead
-     */
-    private $read;
+    private UserRead $read;
 
-    /**
-     * @var UserRegister
-     */
-    private $register;
+    private UserRegister $register;
 
     public function __construct(Context $database, UserRead $read, UserRegister $register)
     {
@@ -55,18 +46,18 @@ class FacebookAuthenticator
                 $credentials->getAuthString()
             );
         }
-        if ($row && !isset($row[UserDatabaseDef::COLUMN_FB_UID])) {
+        if ($row !== null && !isset($row[UserDatabaseDef::COLUMN_FB_UID])) {
             $this->updateMissingUid($credentials);
         }
         if (
-            $row &&
+            $row !== null &&
             isset($row[UserDatabaseDef::COLUMN_FB_UID]) &&
             $row[UserDatabaseDef::COLUMN_FB_UID] === $credentials->getAuthString()
         ) {
             return $this->read->fetchBy($credentials->getEmail());
-        } else {
-            throw new IncorrectCredentialsException("FB user ID does not match with local FB uID.");
         }
+
+        throw new IncorrectCredentialsException("FB user ID does not match with local FB uID.");
     }
 
     /**

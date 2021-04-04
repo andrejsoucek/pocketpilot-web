@@ -7,26 +7,18 @@ namespace PP\User;
 use Nette\Database\Context;
 use Nette\Security\Passwords;
 use Nette\SmartObject;
+use Nette\Utils\AssertionException;
 use PP\IncorrectCredentialsException;
 
 class PasswordAuthenticator
 {
     use SmartObject;
 
-    /**
-     * @var Context
-     */
-    private $database;
+    private Context $database;
 
-    /**
-     * @var UserRead
-     */
-    private $read;
+    private UserRead $read;
 
-    /**
-     * @var Passwords
-     */
-    private $passwords;
+    private Passwords $passwords;
 
     public function __construct(Context $database, UserRead $read, Passwords $passwords)
     {
@@ -40,23 +32,31 @@ class PasswordAuthenticator
      * @param PasswordCredentials $credentials
      * @return UserEntry
      * @throws IncorrectCredentialsException
-     * @throws \Nette\Utils\AssertionException
+     * @throws AssertionException
      */
     public function authenticate(PasswordCredentials $credentials): UserEntry
     {
         $entry = $this->read->fetchBy($credentials->getEmail());
         $row = $this->database->table(UserDatabaseDef::TABLE_NAME)
-            ->where(UserDatabaseDef::COLUMN_ID, $entry->getId())->fetch();
+            ->where(UserDatabaseDef::COLUMN_ID, $entry->getId())
+            ->fetch();
+        if ($row === null) {
+            throw new IncorrectCredentialsException('User does not exist.');
+        }
         $hash = $row[UserDatabaseDef::COLUMN_PASSWORD_HASH];
+
         if (!$this->passwords->verify($credentials->getAuthString(), $hash)) {
             throw new IncorrectCredentialsException('Entered password is incorrect.');
-        } elseif ($this->passwords->needsRehash($hash)) {
+        }
+
+        if ($this->passwords->needsRehash($hash)) {
             $this->database->table(UserDatabaseDef::TABLE_NAME)
                 ->where(UserDatabaseDef::COLUMN_ID, $entry->getId())
                 ->update([
                     UserDatabaseDef::COLUMN_PASSWORD_HASH => $this->passwords->hash($credentials->getAuthString())
                 ]);
         }
+
         return $entry;
     }
 }

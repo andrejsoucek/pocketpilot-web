@@ -14,10 +14,7 @@ use PP\Track\TrackRead;
 class SharePresenter extends AppPresenter
 {
 
-    /**
-     * @var TrackRead
-     */
-    private $read;
+    private TrackRead $read;
 
     public function __construct(TrackRead $read)
     {
@@ -37,6 +34,7 @@ class SharePresenter extends AppPresenter
             $this->flashMessage($this->translator->translate('Track does not exist.'));
             $this->redirect('Homepage:');
         }
+
         return $track->getTrack();
     }
 }

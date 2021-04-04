@@ -10,15 +10,9 @@ class TerrainEntry
 {
     use SmartObject;
 
-    /**
-     * @var float
-     */
-    private $relativeDistance;
+    private float $relativeDistance;
 
-    /**
-     * @var float
-     */
-    private $elevation;
+    private float $elevation;
 
     public function __construct(float $relativeDistance, float $elevation)
     {

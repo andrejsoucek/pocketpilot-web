@@ -6,6 +6,7 @@ namespace PP;
 
 use Nette\Security\AuthenticationException;
 use Nette\SmartObject;
+use Nette\Utils\AssertionException;
 use PP\User\FacebookCredentials;
 use PP\User\UserRegister;
 
@@ -16,15 +17,9 @@ class SignModel
 {
     use SmartObject;
 
-    /**
-     * @var UserRegister
-     */
-    private $register;
+    private UserRegister $register;
 
-    /**
-     * @var FacebookService
-     */
-    private $fb;
+    private FacebookService $fb;
 
     public function __construct(UserRegister $register, FacebookService $fb)
     {
@@ -33,38 +28,40 @@ class SignModel
     }
 
     /**
-     * @param string $username
-     * @param string $email
-     * @param string|null $fb_uid
-     * @param string|null $password
      * @throws IncorrectCredentialsException
-     * @throws \Nette\Utils\AssertionException
+     * @throws AssertionException
      */
-    public function registerUser(string $username, string $email, string $fb_uid = null, string $password = null): void
-    {
+    public function registerUser(
+        string $username,
+        string $email,
+        ?string $fb_uid = null,
+        ?string $password = null
+    ): void {
         $this->register->process($username, $email, $fb_uid, $password);
     }
 
     /**
      * @return FacebookCredentials
-     * @throws \Nette\Security\AuthenticationException
+     * @throws AuthenticationException
      */
     public function getFacebookCredentials(): FacebookCredentials
     {
         $graphUser = $this->fb->fetchUser();
-        if ($graphUser->getEmail() && $graphUser->getId() && $graphUser->getFirstName()) {
+        if (
+            $graphUser->getEmail() !== null &&
+            $graphUser->getId() !== null &&
+            $graphUser->getFirstName() !== null
+        ) {
             return new FacebookCredentials($graphUser->getEmail(), $graphUser->getId(), $graphUser->getFirstName());
-        } else {
-            throw new AuthenticationException('Missing information in Facebook response.');
         }
+
+        throw new AuthenticationException('Missing information in Facebook response.');
     }
 
     /**
-     * @param string $redirectUrl
-     * @return string
-     * @throws \Nette\Utils\AssertionException
+     * @throws AssertionException
      */
-    public function generateLoginUrl(string $redirectUrl)
+    public function generateLoginUrl(string $redirectUrl): string
     {
         return $this->fb->generateLoginUrl($redirectUrl);
     }

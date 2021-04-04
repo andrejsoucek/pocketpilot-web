@@ -14,15 +14,9 @@ class TokenCredentials implements Credentials
 {
     use SmartObject;
 
-    /**
-     * @var string
-     */
-    private $email;
+    private string $email;
 
-    /**
-     * @var string
-     */
-    private $token;
+    private string $token;
 
     public function __construct(string $email, string $token)
     {
@@ -32,12 +26,12 @@ class TokenCredentials implements Credentials
         $this->token = $token;
     }
 
-    public function getEmail()
+    public function getEmail(): string
     {
         return $this->email;
     }
 
-    public function getAuthString()
+    public function getAuthString(): string
     {
         return $this->token;
     }

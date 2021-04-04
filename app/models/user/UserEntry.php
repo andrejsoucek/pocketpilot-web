@@ -11,30 +11,15 @@ class UserEntry
 {
     use SmartObject;
 
-    /**
-     * @var int
-     */
-    private $id;
+    private int $id;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private string $name;
 
-    /**
-     * @var string
-     */
-    private $email;
+    private string $email;
 
-    /**
-     * @var string
-     */
-    private $role;
+    private string $role;
 
-    /**
-     * @var string
-     */
-    private $token;
+    private string $token;
 
     public function __construct(int $id, string $name, string $email, string $role, string $token)
     {
@@ -50,41 +35,26 @@ class UserEntry
         $this->token = $token;
     }
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return string
-     */
     public function getEmail(): string
     {
         return $this->email;
     }
 
-    /**
-     * @return string
-     */
     public function getRole(): string
     {
         return $this->role;
     }
 
-    /**
-     * @return string
-     */
     public function getToken(): string
     {
         return $this->token;

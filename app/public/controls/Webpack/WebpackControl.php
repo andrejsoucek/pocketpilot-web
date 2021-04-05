@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PP\Controls;
 
 use LogicException;
+use Nette\Application\UI\TemplateFactory;
 use PP\DirResolver;
 
 /**
@@ -12,15 +13,16 @@ use PP\DirResolver;
  */
 class WebpackControl extends BaseControl
 {
-    private DirResolver $resolver;
 
-    public function __construct(DirResolver $resolver)
-    {
-        $this->resolver = $resolver;
+    public function __construct(
+        private DirResolver $resolver,
+        private TemplateFactory $tf,
+    ) {
     }
 
     public function render(string $entry): void
     {
+        $this->setTemplateFactory($this->tf);
         $this->template->setFile(__DIR__ . '/webpackControl.latte');
         $this->template->paths = $this->resolvePaths($entry);
         $this->template->render();

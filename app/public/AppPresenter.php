@@ -7,7 +7,6 @@ namespace PP\Presenters;
 use Nette\Application\UI\Presenter;
 use PP\Controls\WebpackControl;
 use PP\Controls\WebpackControlFactory;
-use PP\DirResolver;
 use GettextTranslator\Gettext;
 use PP\Latte\TemplateProperty;
 

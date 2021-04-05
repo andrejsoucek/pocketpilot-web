@@ -7,6 +7,7 @@ namespace PP\API;
 use Nette\Application\AbortException;
 use Nette\Application\Responses\JsonResponse;
 use Nette\Application\UI\Presenter;
+use Nette\Application\UI\Template;
 use Nette\Security\AuthenticationException;
 use PP\User\TokenCredentials;
 use RuntimeException;
@@ -43,7 +44,7 @@ class LoginPresenter extends Presenter
         $this->sendResponse(new JsonResponse(['session' => $this->getSession()->getId()]));
     }
 
-    public function sendTemplate(): void
+    public function sendTemplate(?Template $template = null): void
     {
     }
 }

@@ -8,6 +8,7 @@ use Nette\Application\AbortException;
 use Nette\Application\ForbiddenRequestException;
 use Nette\Application\Responses\JsonResponse;
 use Nette\Application\UI\Presenter;
+use Nette\Application\UI\Template;
 use PP\Track\TrackRead;
 
 /**
@@ -54,7 +55,7 @@ class TracksPresenter extends Presenter
         $this->sendResponse(new JsonResponse($tracks));
     }
 
-    public function sendTemplate(): void
+    public function sendTemplate(?Template $template = null): void
     {
     }
 }

@@ -7,6 +7,7 @@ namespace PP\API;
 use Nette\Application\AbortException;
 use Nette\Application\Responses\JsonResponse;
 use Nette\Application\UI\Presenter;
+use Nette\Application\UI\Template;
 use PP\Airspace\AirspaceEntry;
 use PP\Airspace\AirspaceRead;
 use PP\Airspace\RelativePosition;
@@ -63,7 +64,7 @@ class AirspacePresenter extends Presenter
         $this->sendResponse(new JsonResponse($xs));
     }
 
-    public function sendTemplate(): void
+    public function sendTemplate(?Template $template = null): void
     {
     }
 }

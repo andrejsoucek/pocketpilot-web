@@ -7,6 +7,7 @@ namespace PP\API;
 use Nette\Application\AbortException;
 use Nette\Application\Responses\JsonResponse;
 use Nette\Application\UI\Presenter;
+use Nette\Application\UI\Template;
 use PP\Terrain\TerrainEntry;
 use PP\Terrain\TerrainRead;
 
@@ -48,7 +49,7 @@ class TerrainPresenter extends Presenter
         $this->sendResponse(new JsonResponse($xs));
     }
 
-    public function sendTemplate(): void
+    public function sendTemplate(?Template $template = null): void
     {
     }
 }

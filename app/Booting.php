@@ -52,7 +52,6 @@ class Booting
                 $html->addAttributes([
                     'data-hcaptcha-protected' => true,
                     'data-sitekey' => $sitekey,
-                    'data-size' => 'invisible',
                 ]);
                 $form->addHidden('hCaptchaResponse');
 

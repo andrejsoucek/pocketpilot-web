@@ -23,23 +23,15 @@ class LoginForm extends BaseControl
 
     private User $user;
 
-    private HCaptchaVerifier $hCaptchaVerifier;
-
-    private string $hCaptchaSiteKey;
-
     private string $fbLoginUrl;
 
     public function __construct(
         Gettext $translator,
         User $user,
-        HCaptchaVerifier $hCaptchaVerifier,
-        string $hCaptchaSiteKey,
         string $fbLoginUrl
     ) {
         $this->translator = $translator;
         $this->user = $user;
-        $this->hCaptchaVerifier = $hCaptchaVerifier;
-        $this->hCaptchaSiteKey = $hCaptchaSiteKey;
         $this->fbLoginUrl = $fbLoginUrl;
     }
 
@@ -74,7 +66,6 @@ class LoginForm extends BaseControl
             ->setRequired('Please enter your password.')
             ->setHtmlAttribute('placeholder', 'Password');
         $form->addSubmit('send', 'Log in');
-        $form->addHCaptcha($this->hCaptchaSiteKey);
         $form->onSuccess[] = [$this, 'processForm'];
         return $form;
     }
@@ -86,13 +77,8 @@ class LoginForm extends BaseControl
     {
         $values = $form->getValues();
         try {
-            $isHuman = $this->hCaptchaVerifier->verify($values->hCaptchaResponse);
-            if ($isHuman) {
-                $this->user->login(new PasswordCredentials($values->email, $values->password));
-                $this->onSuccess();
-            } else {
-                $form->addError($this->translator->translate("Incorrect captcha, please try again."));
-            }
+            $this->user->login(new PasswordCredentials($values->email, $values->password));
+            $this->onSuccess();
         } catch (AuthenticationException $e) {
             $form->addError($this->translator->translate("Incorrect e-mail or password."));
         }
@@ -101,5 +87,5 @@ class LoginForm extends BaseControl
 
 interface LoginFormFactory
 {
-    public function create(string $hCaptchaSiteKey, string $fbLoginUrl): LoginForm;
+    public function create(string $fbLoginUrl): LoginForm;
 }

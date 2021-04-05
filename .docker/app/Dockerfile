@@ -2,12 +2,12 @@
 FROM dockette/debian:buster as build
 
 # PHP
-ENV PHP_MODS_DIR=/etc/php/7.4/mods-available
-ENV PHP_CLI_DIR=/etc/php/7.4/cli/
+ENV PHP_MODS_DIR=/etc/php/8.0/mods-available
+ENV PHP_CLI_DIR=/etc/php/8.0/cli/
 ENV PHP_CLI_CONF_DIR=${PHP_CLI_DIR}/conf.d
-ENV PHP_CGI_DIR=/etc/php/7.4/cgi/
+ENV PHP_CGI_DIR=/etc/php/8.0/cgi/
 ENV PHP_CGI_CONF_DIR=${PHP_CGI_DIR}/conf.d
-ENV PHP_FPM_DIR=/etc/php/7.4/fpm/
+ENV PHP_FPM_DIR=/etc/php/8.0/fpm/
 ENV PHP_FPM_CONF_DIR=${PHP_FPM_DIR}/conf.d
 ENV PHP_FPM_POOL_DIR=${PHP_FPM_DIR}/pool.d
 ENV TZ=Europe/Prague
@@ -28,28 +28,28 @@ RUN apt update && apt dist-upgrade -y && \
         nginx \
         sudo \
         supervisor \
-        php7.4-apc \
-        php7.4-apcu \
-        php7.4-bz2 \
-        php7.4-bcmath \
-        php7.4-calendar \
-        php7.4-cgi \
-        php7.4-cli \
-        php7.4-ctype \
-        php7.4-curl \
-        php7.4-fpm \
-        php7.4-gettext \
-        php7.4-intl \
-        php7.4-imap \
-        php7.4-mbstring \
-        php7.4-memcached \
-        php7.4-pdo \
-        php7.4-pgsql \
-        php7.4-ssh2 \
-        php7.4-sqlite \
-        php7.4-tidy \
-        php7.4-zip \
-        php7.4-xml && \
+        php8.0-apc \
+        php8.0-apcu \
+        php8.0-bz2 \
+        php8.0-bcmath \
+        php8.0-calendar \
+        php8.0-cgi \
+        php8.0-cli \
+        php8.0-ctype \
+        php8.0-curl \
+        php8.0-fpm \
+        php8.0-gettext \
+        php8.0-intl \
+        php8.0-imap \
+        php8.0-mbstring \
+        php8.0-memcached \
+        php8.0-pdo \
+        php8.0-pgsql \
+        php8.0-ssh2 \
+        php8.0-sqlite \
+        php8.0-tidy \
+        php8.0-zip \
+        php8.0-xml && \
     # COMPOSER #################################################################
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --2 && \
     # PHP MOD(s) ###############################################################
@@ -66,7 +66,7 @@ RUN apt update && apt dist-upgrade -y && \
     rm -rf /var/lib/apt/lists/* /var/lib/log/* /tmp/* /var/tmp/*
 
 # PHP
-COPY ./.docker/app/php/php-fpm.conf /etc/php/7.4/
+COPY ./.docker/app/php/php-fpm.conf /etc/php/8.0/
 
 # NGINX
 COPY ./.docker/app/nginx/nginx.conf /etc/nginx/
@@ -74,7 +74,8 @@ COPY ./.docker/app/nginx/mime.types /etc/nginx/
 
 # SUPERVISOR
 COPY ./.docker/app/supervisor/supervisord.conf /etc/supervisor/
-COPY ./.docker/app/supervisor/services /etc/supervisor/conf.d/
+COPY ./.docker/app/supervisor/services/nginx.conf /etc/supervisor/conf.d/nginx.conf
+COPY ./.docker/app/supervisor/services/php-fpm.conf /etc/supervisor/conf.d/php-fpm.conf
 
 WORKDIR /pocketpilot
 
@@ -141,6 +142,7 @@ RUN chmod 755 /usr/local/bin/letsencrypt-init.sh
 RUN echo 'letsencrypt ALL = NOPASSWD: /usr/sbin/service nginx force-reload' > /etc/sudoers.d/letsencrypt && chmod 600 /etc/sudoers.d/letsencrypt
 
 COPY ./.docker/app/nginx/sites.d/sites.conf /etc/nginx/sites.d/
+COPY ./.docker/app/supervisor/services/letsencrypt.conf /etc/supervisor/conf.d/letsencrypt.conf
 
 RUN mkdir -p temp log && chown www-data:www-data temp log
 

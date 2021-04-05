@@ -74,7 +74,8 @@ COPY ./.docker/app/nginx/mime.types /etc/nginx/
 
 # SUPERVISOR
 COPY ./.docker/app/supervisor/supervisord.conf /etc/supervisor/
-COPY ./.docker/app/supervisor/services /etc/supervisor/conf.d/
+COPY ./.docker/app/supervisor/services/nginx.conf /etc/supervisor/conf.d/nginx.conf
+COPY ./.docker/app/supervisor/services/php-fpm.conf /etc/supervisor/conf.d/php-fpm.conf
 
 WORKDIR /pocketpilot
 
@@ -141,6 +142,7 @@ RUN chmod 755 /usr/local/bin/letsencrypt-init.sh
 RUN echo 'letsencrypt ALL = NOPASSWD: /usr/sbin/service nginx force-reload' > /etc/sudoers.d/letsencrypt && chmod 600 /etc/sudoers.d/letsencrypt
 
 COPY ./.docker/app/nginx/sites.d/sites.conf /etc/nginx/sites.d/
+COPY ./.docker/app/supervisor/services/letsencrypt.conf /etc/supervisor/conf.d/letsencrypt.conf
 
 RUN mkdir -p temp log && chown www-data:www-data temp log
 

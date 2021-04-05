@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App;
 
 use Nette\Configurator;
+use Nette\Forms\Container;
+use Nette\Forms\Controls\SubmitButton;
+use Nette\Forms\Form;
 
 class Booting
 {
@@ -22,6 +25,9 @@ class Booting
         $configurator
             ->addConfig(__DIR__ . '/config/config.neon')
             ->addConfig(__DIR__ . '/config/config.local.neon');
+
+        self::addCustomFormControls();
+
         return $configurator;
     }
 
@@ -35,5 +41,23 @@ class Booting
     private static function isDebugMode(): bool
     {
         return getenv('DEBUG_MODE') === 'true';
+    }
+
+    private static function addCustomFormControls(): void
+    {
+        Container::extensionMethod(
+            'addHCaptcha',
+            function (Form $form, string $sitekey) {
+                $html = $form->getElementPrototype();
+                $html->addAttributes([
+                    'data-hcaptcha-protected' => true,
+                    'data-sitekey' => $sitekey,
+                    'data-size' => 'invisible',
+                ]);
+                $form->addHidden('hCaptchaResponse');
+
+                return $form;
+            }
+        );
     }
 }

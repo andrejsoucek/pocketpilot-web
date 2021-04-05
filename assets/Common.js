@@ -4,6 +4,7 @@ import { common } from './js/Common/Main'
 
 $(() => {
   common.requireIcons()
+  common.requireHCaptcha()
   common.requireNetteForms()
   common.requireNaja()
   common.requireSideNav()

@@ -1,85 +1,95 @@
 parameters:
-	facebook:
-		dgv: 'v2.10'
-	scriptsDir: /dist
-	manifestDir: %appDir%/../www/dist
-
+    facebook:
+        dgv: 'v2.10'
+    scriptsDir: /dist
+    manifestDir: %appDir%/../www/dist
+    hCaptcha:
+        url: https://hcaptcha.com/siteverify
 
 application:
-	errorPresenter: Error
-	mapping:
-		*: PP\*Module\Presenters\*Presenter
-		APIv1: PP\API\*Presenter
+    errorPresenter: Error
+    mapping:
+        *: PP\*Module\Presenters\*Presenter
+        APIv1: PP\API\*Presenter
 
 session:
-	expiration: 14 days
-	name: 'session'
+    expiration: 14 days
+    name: 'session'
 
 
 services:
-	authenticator: PP\Authenticator
-	dashboardRead: PP\Dashboard\DashboardRead
-	dirResolver: PP\DirResolver(%appDir%, %scriptsDir%, %manifestDir%)
-	facebook: Facebook\Facebook( {app_id: %facebook.app_id%, app_secret: %facebook.app_secret%, default_graph_version: %facebook.dgv%} )
-	router: PP\RouterFactory::createRouter
-	- PP\Airspace\AirspaceRead
-	- PP\Controls\ApiKeyFormFactory
-	- PP\Controls\ContactFormFactory
-	- PP\Controls\LoginFormFactory
-	- PP\Controls\NavbarControlFactory
-	- PP\Controls\NewPasswordFormFactory
-	- PP\Controls\POIControlFactory
-	- PP\Controls\POIImportFormFactory
-	- PP\Controls\PasswordRecoveryFormFactory
-	- PP\Controls\RegisterFormFactory
-	- PP\Controls\SaveTrackFormFactory
-	- PP\Controls\WebpackControlFactory
-	- PP\FacebookService
-	- PP\POI\POIRead
-	- PP\POI\POIImporter
-	- PP\SignModel
-	- PP\Terrain\TerrainRead
-	- PP\Track\TrackCreate
-	- PP\Track\TrackDelete
-	- PP\Track\TrackRead
-	- PP\Track\TrackUpdate
-	- PP\User\FacebookAuthenticator
-	- PP\User\PasswordAuthenticator
-	- PP\User\PasswordReset
-	- PP\User\TokenAuthenticator
-	- PP\User\UserRead
-	- PP\User\UserRegister
-	- PP\User\UserUpdate
+    authenticator: PP\Authenticator
+    dashboardRead: PP\Dashboard\DashboardRead
+    dirResolver: PP\DirResolver(%appDir%, %scriptsDir%, %manifestDir%)
+    facebook: Facebook\Facebook( {app_id: %facebook.app_id%, app_secret: %facebook.app_secret%, default_graph_version: %facebook.dgv%} )
+    router: PP\RouterFactory::createRouter
+    - PP\Airspace\AirspaceRead
+    - PP\Controls\ApiKeyFormFactory
+    - PP\Controls\ContactFormFactory
+    - PP\Controls\LoginFormFactory
+    - PP\Controls\NavbarControlFactory
+    - PP\Controls\NewPasswordFormFactory
+    - PP\Controls\POIControlFactory
+    - PP\Controls\POIImportFormFactory
+    - PP\Controls\PasswordRecoveryFormFactory
+    - PP\Controls\RegisterFormFactory
+    - PP\Controls\SaveTrackFormFactory
+    - PP\Controls\WebpackControlFactory
+    - PP\FacebookService
+    - PP\HCaptcha\HCaptchaVerifier(%hCaptcha.url%, %hCaptcha.secret%, %hCaptcha.sitekey%, @httpRequest)
+    - PP\POI\POIRead
+    - PP\POI\POIImporter
+    - PP\Presenters\SignPresenter(%hCaptcha.sitekey%)
+    - PP\SignModel
+    - PP\Terrain\TerrainRead
+    - PP\Track\TrackCreate
+    - PP\Track\TrackDelete
+    - PP\Track\TrackRead
+    - PP\Track\TrackUpdate
+    - PP\User\FacebookAuthenticator
+    - PP\User\PasswordAuthenticator
+    - PP\User\PasswordReset
+    - PP\User\TokenAuthenticator
+    - PP\User\UserRead
+    - PP\User\UserRegister
+    - PP\User\UserUpdate
 
 
 http:
-	csp:
-		default-src: none
-		img-src:
-			- self
-			- play.google.com
-			- nwy-tiles-api.prod.newaydata.com
-			- *.openstreetmap.org
-			- *.openflightmaps.org
-			- 'data:'
-		script-src:
-			- strict-dynamic
-			- nonce
-			- unsafe-inline
-		style-src:
-			- self
-			- unsafe-inline
-		connect-src:
-			- self
-			- *.openstreetmap.org
-		frame-ancestors:
-			- none
-	frames: DENY
+    csp:
+        default-src: none
+        frame-src:
+            - https://hcaptcha.com
+            - https://*.hcaptcha.com
+        img-src:
+            - self
+            - play.google.com
+            - nwy-tiles-api.prod.newaydata.com
+            - *.openstreetmap.org
+            - *.openflightmaps.org
+            - 'data:'
+        script-src:
+            - strict-dynamic
+            - nonce
+            - unsafe-inline
+        style-src:
+            - self
+            - https://hcaptcha.com
+            - https://*.hcaptcha.com
+            - unsafe-inline
+        connect-src:
+            - self
+            - *.openstreetmap.org
+            - https://hcaptcha.com
+            - https://*.hcaptcha.com
+        frame-ancestors:
+            - none
+    frames: DENY
 
 
 extensions:
-	gettextTranslator: GettextTranslator\Extension
+    gettextTranslator: GettextTranslator\Extension
 
 gettextTranslator:
-	files:
-		all: %appDir%/i18n
+    files:
+        all: %appDir%/i18n

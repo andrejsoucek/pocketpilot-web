@@ -4,6 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
 	<title>{ifset title}{include title|stripHtml} | {/ifset}Pocket Pilot</title>
+	<script n:nonce src="https://hcaptcha.com/1/api.js&render=explicit"></script>
 	{if $control->getComponent('webpack', false) !== null}
 		{control webpack common}
 	{/if}

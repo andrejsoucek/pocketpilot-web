@@ -45,6 +45,35 @@ function start(win) {
         snippetPostProcessor.applyCallbacksOn(event.snippet)
       })
     },
+    requireHCaptcha: () => {
+      const selector = '[data-hcaptcha-protected]'
+      const apply = (el) => {
+        const submit = el.querySelector('input[type="submit"]')
+
+        const callbackName = `${el.id}Callback`
+        window[callbackName] = (token) => {
+          submit.form.querySelector('input[type=hidden][name=hCaptchaResponse]').value = token
+          submit.form.submit()
+        }
+
+        const widgetId = window.hcaptcha.render(el.id, {
+          sitekey: el.dataset.sitekey,
+          size: 'invisible',
+          callback: callbackName
+        })
+
+        submit.addEventListener('click', (e) => {
+          e.preventDefault()
+          e.stopImmediatePropagation()
+
+          const isValid = window.Nette.validateForm(e.target)
+          if (isValid) {
+            window.hcaptcha.execute(widgetId)
+          }
+        })
+      }
+      main.attach(selector, apply)
+    },
     requireSideNav: () => {
       const selector = '.sidenav'
       const apply = (el) => {

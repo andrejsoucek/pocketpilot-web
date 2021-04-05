@@ -753,3 +753,7 @@ msgstr "Oprava zobrazení naplánovaných a zalogovaných tras."
 #: Added from Tracy bar
 msgid "Dynamic map sources loading."
 msgstr "Dynamické načítání aktuálních mapových podkladů."
+
+#: Added from Tracy bar
+msgid "Incorrect captcha, please try again."
+msgstr "Chybný kód captcha, zkuste prosím akci zopakovat."

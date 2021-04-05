@@ -29,7 +29,10 @@ class SignPresenter extends AppPresenter
 
     private RegisterFormFactory $registerFormFactory;
 
+    private string $hCaptchaSiteKey;
+
     public function __construct(
+        string $hCaptchaSiteKey,
         SignModel $model,
         LoginFormFactory $loginFormFactory,
         RegisterFormFactory $registerFormFactory
@@ -38,6 +41,7 @@ class SignPresenter extends AppPresenter
         $this->model = $model;
         $this->loginFormFactory = $loginFormFactory;
         $this->registerFormFactory = $registerFormFactory;
+        $this->hCaptchaSiteKey = $hCaptchaSiteKey;
     }
 
     /**
@@ -85,7 +89,10 @@ class SignPresenter extends AppPresenter
 
     protected function createComponentLoginForm(): LoginForm
     {
-        $form = $this->loginFormFactory->create($this->model->generateLoginUrl($this->link('//fbLogin')));
+        $form = $this->loginFormFactory->create(
+            $this->hCaptchaSiteKey,
+            $this->model->generateLoginUrl($this->link('//fbLogin'))
+        );
         $form->onSuccess[] = function (): void {
             $this->redirect('Dashboard:');
         };
@@ -95,7 +102,7 @@ class SignPresenter extends AppPresenter
 
     protected function createComponentRegisterForm(): RegisterForm
     {
-        $form = $this->registerFormFactory->create();
+        $form = $this->registerFormFactory->create($this->hCaptchaSiteKey);
         $form->onSuccess[] = function (): void {
             $this->flashMessage($this->translator->translate('Sign up successful, now you can log in.'));
             $this->redirect('Homepage:');

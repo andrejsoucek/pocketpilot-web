@@ -6,6 +6,7 @@ namespace PP\Controls;
 
 use GettextTranslator\Gettext;
 use Nette\Application\UI\Form;
+use PP\HCaptcha\HCaptchaVerifier;
 use PP\IncorrectCredentialsException;
 use PP\SignModel;
 
@@ -21,9 +22,19 @@ class RegisterForm extends BaseControl
 
     private Gettext $translator;
 
-    public function __construct(SignModel $model, Gettext $translator)
-    {
+    private HCaptchaVerifier $hCaptchaVerifier;
+
+    private string $hCaptchaSiteKey;
+
+    public function __construct(
+        SignModel $model,
+        Gettext $translator,
+        HCaptchaVerifier $hCaptchaVerifier,
+        string $hCaptchaSiteKey
+    ) {
+        $this->hCaptchaSiteKey = $hCaptchaSiteKey;
         $this->model = $model;
+        $this->hCaptchaVerifier = $hCaptchaVerifier;
         $this->translator = $translator;
     }
 
@@ -53,6 +64,7 @@ class RegisterForm extends BaseControl
             ->setHtmlAttribute('placeholder', 'Password again')
             ->setOmitted(true);
         $form->addSubmit('send', 'Submit');
+        $form->addHCaptcha($this->hCaptchaSiteKey);
         $form->onSuccess[] = [$this, 'processForm'];
         return $form;
     }
@@ -64,8 +76,13 @@ class RegisterForm extends BaseControl
     {
         $values = $form->getValues();
         try {
-            $this->model->registerUser($values->username, $values->email, null, $values->password);
-            $this->onSuccess();
+            $isHuman = $this->hCaptchaVerifier->verify($values->hCaptchaResponse);
+            if ($isHuman) {
+                $this->model->registerUser($values->username, $values->email, null, $values->password);
+                $this->onSuccess();
+            } else {
+                $form->addError($this->translator->translate("Incorrect captcha, please try again."));
+            }
         } catch (IncorrectCredentialsException $e) {
             $form->addError($this->translator->translate('This account already exists.'));
         }
@@ -74,5 +91,5 @@ class RegisterForm extends BaseControl
 
 interface RegisterFormFactory
 {
-    public function create(): RegisterForm;
+    public function create(string $hCaptchaSiteKey): RegisterForm;
 }

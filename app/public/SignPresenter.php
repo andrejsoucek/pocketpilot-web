@@ -90,7 +90,8 @@ class SignPresenter extends AppPresenter
     protected function createComponentLoginForm(): LoginForm
     {
         $form = $this->loginFormFactory->create(
-            $this->model->generateLoginUrl($this->link('//fbLogin'))
+            $this->model->generateLoginUrl($this->link('//fbLogin')),
+            $this->hCaptchaSiteKey
         );
         $form->onSuccess[] = function (): void {
             $this->redirect('Dashboard:');

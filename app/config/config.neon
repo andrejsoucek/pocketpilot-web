@@ -13,7 +13,7 @@ application:
         APIv1: PP\API\*Presenter
 
 session:
-    expiration: 14 days
+    expiration: 1 hour
     name: 'session'
 
 
@@ -39,6 +39,7 @@ services:
     - PP\HCaptcha\HCaptchaVerifier(%hCaptcha.url%, %hCaptcha.secret%, %hCaptcha.sitekey%, @httpRequest)
     - PP\POI\POIRead
     - PP\POI\POIImporter
+    - PP\Presenters\PasswordRecoveryPresenter(%hCaptcha.sitekey%)
     - PP\Presenters\SignPresenter(%hCaptcha.sitekey%)
     - PP\SignModel
     - PP\Terrain\TerrainRead

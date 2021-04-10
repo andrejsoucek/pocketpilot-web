@@ -17,6 +17,7 @@ use PP\User\UserRead;
  */
 class PasswordRecoveryForm extends BaseControl
 {
+    private string $hCaptchaSiteKey;
 
     public array $onSuccess = [];
 
@@ -26,8 +27,13 @@ class PasswordRecoveryForm extends BaseControl
 
     private Gettext $translator;
 
-    public function __construct(UserRead $userRead, PasswordReset $pwReset, Gettext $translator)
-    {
+    public function __construct(
+        string $hCaptchaSiteKey,
+        UserRead $userRead,
+        PasswordReset $pwReset,
+        Gettext $translator
+    ) {
+        $this->hCaptchaSiteKey = $hCaptchaSiteKey;
         $this->userRead = $userRead;
         $this->pwReset = $pwReset;
         $this->translator = $translator;
@@ -48,6 +54,7 @@ class PasswordRecoveryForm extends BaseControl
             ->addRule($form::EMAIL, 'The e-mail must be in correct format.')
             ->setHtmlAttribute('placeholder', 'E-mail');
         $form->addSubmit('send', 'Reset password');
+        $form->addHCaptcha($this->hCaptchaSiteKey);
 
         $form->onSuccess[] = array($this, 'processForm');
         return $form;
@@ -73,5 +80,5 @@ class PasswordRecoveryForm extends BaseControl
 
 interface PasswordRecoveryFormFactory
 {
-    public function create(): PasswordRecoveryForm;
+    public function create(string $hCaptchaSiteKey): PasswordRecoveryForm;
 }

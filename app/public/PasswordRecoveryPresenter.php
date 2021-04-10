@@ -17,6 +17,8 @@ use PP\User\UserRead;
  */
 class PasswordRecoveryPresenter extends AppPresenter
 {
+    private string $hCaptchaSiteKey;
+
     private PasswordReset $pwReset;
 
     private PasswordRecoveryFormFactory $passwordRecoveryFormFactory;
@@ -24,11 +26,13 @@ class PasswordRecoveryPresenter extends AppPresenter
     private NewPasswordFormFactory $newPasswordFormFactory;
 
     public function __construct(
+        string $hCaptchaSiteKey,
         PasswordReset $pwReset,
         PasswordRecoveryFormFactory $passwordRecoveryFormFactory,
         NewPasswordFormFactory $newPasswordFormFactory
     ) {
         parent::__construct();
+        $this->hCaptchaSiteKey = $hCaptchaSiteKey;
         $this->pwReset = $pwReset;
         $this->passwordRecoveryFormFactory = $passwordRecoveryFormFactory;
         $this->newPasswordFormFactory = $newPasswordFormFactory;
@@ -59,7 +63,7 @@ class PasswordRecoveryPresenter extends AppPresenter
 
     protected function createComponentRecoveryForm(): PasswordRecoveryForm
     {
-        $form = $this->passwordRecoveryFormFactory->create();
+        $form = $this->passwordRecoveryFormFactory->create($this->hCaptchaSiteKey);
         $form->onSuccess[] = function (UserEntry $user): void {
             $this->flashMessage($this->translator->translate("An e-mail has been sent to %s.", $user->getEmail()));
             $this->redirect('Sign:');

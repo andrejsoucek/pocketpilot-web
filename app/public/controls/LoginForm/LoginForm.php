@@ -6,6 +6,7 @@ namespace PP\Controls;
 
 use GettextTranslator\Gettext;
 use Nette\Application\UI\Form;
+use Nette\Http\Session;
 use Nette\Security\AuthenticationException;
 use Nette\Security\User;
 use PP\HCaptcha\HCaptchaVerifier;
@@ -16,8 +17,9 @@ use PP\User\PasswordCredentials;
  */
 class LoginForm extends BaseControl
 {
-
     public array $onSuccess = [];
+
+    private Session $session;
 
     private Gettext $translator;
 
@@ -25,14 +27,24 @@ class LoginForm extends BaseControl
 
     private string $fbLoginUrl;
 
+    private string $hCaptchaSiteKey;
+
+    private const INVALID_LOGIN_ATTEMPTS_SESSION_SECTION = 'loginAttempts';
+    private const INVALID_LOGIN_ATTEMPTS_SESSION_KEY = 'attempt';
+    private const INVALID_LOGIN_ATTEMPTS_THRESHOLD = 3;
+
     public function __construct(
+        Session $session,
         Gettext $translator,
         User $user,
-        string $fbLoginUrl
+        string $fbLoginUrl,
+        string $hCaptchaSiteKey
     ) {
+        $this->session = $session;
         $this->translator = $translator;
         $this->user = $user;
         $this->fbLoginUrl = $fbLoginUrl;
+        $this->hCaptchaSiteKey = $hCaptchaSiteKey;
     }
 
     public function render(): void
@@ -66,6 +78,9 @@ class LoginForm extends BaseControl
             ->setRequired('Please enter your password.')
             ->setHtmlAttribute('placeholder', 'Password');
         $form->addSubmit('send', 'Log in');
+        if ($this->getInvalidLoginAttempts() >= self::INVALID_LOGIN_ATTEMPTS_THRESHOLD) {
+            $form->addHCaptcha($this->hCaptchaSiteKey);
+        }
         $form->onSuccess[] = [$this, 'processForm'];
         return $form;
     }
@@ -78,14 +93,37 @@ class LoginForm extends BaseControl
         $values = $form->getValues();
         try {
             $this->user->login(new PasswordCredentials($values->email, $values->password));
+            $this->resetInvalidLoginAttempts();
             $this->onSuccess();
         } catch (AuthenticationException $e) {
+            $this->incrementInvalidLoginAttempts();
             $form->addError($this->translator->translate("Incorrect e-mail or password."));
         }
+    }
+
+    private function getInvalidLoginAttempts(): int
+    {
+        $section = $this->session->getSection(self::INVALID_LOGIN_ATTEMPTS_SESSION_SECTION);
+        return $section->offsetExists(self::INVALID_LOGIN_ATTEMPTS_SESSION_KEY) ?
+            $section->offsetGet(self::INVALID_LOGIN_ATTEMPTS_SESSION_KEY) :
+            1;
+    }
+
+    private function resetInvalidLoginAttempts(): void
+    {
+        $section = $this->session->getSection(self::INVALID_LOGIN_ATTEMPTS_SESSION_SECTION);
+        $section->offsetSet(self::INVALID_LOGIN_ATTEMPTS_SESSION_KEY, 1);
+    }
+
+    private function incrementInvalidLoginAttempts(): void
+    {
+        $section = $this->session->getSection(self::INVALID_LOGIN_ATTEMPTS_SESSION_SECTION);
+        $v = $this->getInvalidLoginAttempts() + 1;
+        $section->offsetSet(self::INVALID_LOGIN_ATTEMPTS_SESSION_KEY, $v);
     }
 }
 
 interface LoginFormFactory
 {
-    public function create(string $fbLoginUrl): LoginForm;
+    public function create(string $fbLoginUrl, string $hCaptchaSiteKey): LoginForm;
 }

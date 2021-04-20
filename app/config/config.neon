@@ -1,6 +1,4 @@
 parameters:
-    facebook:
-        dgv: 'v2.10'
     scriptsDir: /dist
     manifestDir: %appDir%/../www/dist
     hCaptcha:
@@ -21,7 +19,6 @@ services:
     authenticator: PP\Authenticator
     dashboardRead: PP\Dashboard\DashboardRead
     dirResolver: PP\DirResolver(%appDir%, %scriptsDir%, %manifestDir%)
-    facebook: Facebook\Facebook( {app_id: %facebook.app_id%, app_secret: %facebook.app_secret%, default_graph_version: %facebook.dgv%} )
     router: PP\RouterFactory::createRouter
     - PP\Airspace\AirspaceRead
     - PP\Controls\ApiKeyFormFactory
@@ -35,7 +32,6 @@ services:
     - PP\Controls\RegisterFormFactory
     - PP\Controls\SaveTrackFormFactory
     - PP\Controls\WebpackControlFactory
-    - PP\FacebookService
     - PP\HCaptcha\HCaptchaVerifier(%hCaptcha.url%, %hCaptcha.secret%, %hCaptcha.sitekey%, @httpRequest)
     - PP\POI\POIRead
     - PP\POI\POIImporter
@@ -47,7 +43,6 @@ services:
     - PP\Track\TrackDelete
     - PP\Track\TrackRead
     - PP\Track\TrackUpdate
-    - PP\User\FacebookAuthenticator
     - PP\User\PasswordAuthenticator
     - PP\User\PasswordReset
     - PP\User\TokenAuthenticator

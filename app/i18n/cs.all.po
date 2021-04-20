@@ -182,9 +182,6 @@ msgstr "Neplatný token."
 msgid "Sign up successful, now you can log in."
 msgstr "Registrace byla úspěšná, nyní se můžete přihlásit."
 
-msgid "Error while connecting to Facebook"
-msgstr "Nastala chyba při komunikaci s Facebookem"
-
 #: Added from Tracy bar
 msgid "Continue as"
 msgstr "Pokračovat jako"

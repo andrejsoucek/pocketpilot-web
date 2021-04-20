@@ -47,19 +47,6 @@ class SignPresenter extends AppPresenter
     /**
      * @throws AbortException
      */
-    public function actionFbLogin(): void
-    {
-        try {
-            $this->getUser()->login($this->model->getFacebookCredentials());
-        } catch (AuthenticationException $e) {
-            $this->flashMessage($this->translator->translate("Error while connecting to Facebook"));
-        }
-        $this->redirect('Sign:');
-    }
-
-    /**
-     * @throws AbortException
-     */
     public function actionLogOut(): void
     {
         $this->getUser()->logout();
@@ -90,7 +77,6 @@ class SignPresenter extends AppPresenter
     protected function createComponentLoginForm(): LoginForm
     {
         $form = $this->loginFormFactory->create(
-            $this->model->generateLoginUrl($this->link('//fbLogin')),
             $this->hCaptchaSiteKey
         );
         $form->onSuccess[] = function (): void {

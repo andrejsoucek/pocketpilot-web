@@ -26,7 +26,6 @@
         "nette/utils": "^3.0",
         "latte/latte": "^2.5",
         "tracy/tracy": "^2.6",
-        "facebook/graph-sdk": "^5.6",
         "andrejsoucek/gettext-translator": "1.0.10",
         "nextras/mail-panel": "^2.5",
         "ublaboo/api-router": "^4.0"

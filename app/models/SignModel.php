@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace PP;
 
-use Nette\Security\AuthenticationException;
 use Nette\SmartObject;
 use Nette\Utils\AssertionException;
-use PP\User\FacebookCredentials;
 use PP\User\UserRegister;
 
 /**
@@ -19,12 +17,9 @@ class SignModel
 
     private UserRegister $register;
 
-    private FacebookService $fb;
-
-    public function __construct(UserRegister $register, FacebookService $fb)
+    public function __construct(UserRegister $register)
     {
         $this->register = $register;
-        $this->fb = $fb;
     }
 
     /**
@@ -38,31 +33,5 @@ class SignModel
         ?string $password = null
     ): void {
         $this->register->process($username, $email, $fb_uid, $password);
-    }
-
-    /**
-     * @return FacebookCredentials
-     * @throws AuthenticationException
-     */
-    public function getFacebookCredentials(): FacebookCredentials
-    {
-        $graphUser = $this->fb->fetchUser();
-        if (
-            $graphUser->getEmail() !== null &&
-            $graphUser->getId() !== null &&
-            $graphUser->getFirstName() !== null
-        ) {
-            return new FacebookCredentials($graphUser->getEmail(), $graphUser->getId(), $graphUser->getFirstName());
-        }
-
-        throw new AuthenticationException('Missing information in Facebook response.');
-    }
-
-    /**
-     * @throws AssertionException
-     */
-    public function generateLoginUrl(string $redirectUrl): string
-    {
-        return $this->fb->generateLoginUrl($redirectUrl);
     }
 }

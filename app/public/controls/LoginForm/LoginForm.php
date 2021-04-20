@@ -25,8 +25,6 @@ class LoginForm extends BaseControl
 
     private User $user;
 
-    private string $fbLoginUrl;
-
     private string $hCaptchaSiteKey;
 
     private const INVALID_LOGIN_ATTEMPTS_SESSION_SECTION = 'loginAttempts';
@@ -37,13 +35,11 @@ class LoginForm extends BaseControl
         Session $session,
         Gettext $translator,
         User $user,
-        string $fbLoginUrl,
         string $hCaptchaSiteKey
     ) {
         $this->session = $session;
         $this->translator = $translator;
         $this->user = $user;
-        $this->fbLoginUrl = $fbLoginUrl;
         $this->hCaptchaSiteKey = $hCaptchaSiteKey;
     }
 
@@ -51,14 +47,8 @@ class LoginForm extends BaseControl
     {
         $this->template->setFile(__DIR__ . '/loginForm.latte');
         $this->template->setTranslator($this->translator);
-        $this->template->fbLoginUrl = $this->getFbLoginUrl();
         $this->template->lang = $this->getLang();
         $this->template->render();
-    }
-
-    public function getFbLoginUrl(): string
-    {
-        return $this->fbLoginUrl;
     }
 
     public function getLang(): string
@@ -125,5 +115,5 @@ class LoginForm extends BaseControl
 
 interface LoginFormFactory
 {
-    public function create(string $fbLoginUrl, string $hCaptchaSiteKey): LoginForm;
+    public function create(string $hCaptchaSiteKey): LoginForm;
 }

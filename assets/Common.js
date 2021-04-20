@@ -14,4 +14,5 @@ $(() => {
   common.requireFlashMessage()
   common.requireConfirmation()
   common.requireTabs()
+  common.requireSmoothScrolling()
 })

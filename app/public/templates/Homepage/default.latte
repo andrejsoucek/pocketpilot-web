@@ -1,5 +1,5 @@
 {block content}
-<div class="row" style="min-height: 100vh; margin:0">
+<div class="row" style="min-height: 100vh; margin:0; scroll-behavior: smooth">
 	<div class="col s12 m12 l6 valign-wrapper" style="min-height: 100vh">
 		<div class="center" style="margin: auto;">
 			<div class="logo"></div>
@@ -8,9 +8,10 @@
 			<a class="badge" href='https://play.google.com/store/apps/details?id=cz.pocketpilot.app&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>
 				<img class="badge" alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/{if $lang === 'cs'}cs{else}en{/if}_badge_web_generic.png'/>
 			</a>
+			<span class="hide-on-large-only" data-smooth-scroll-to="#description" style="display: block; margin-top: 25px; font-size: 2em"><i class="fas fa-angle-double-down"></i></span>
 		</div>
 	</div>
-	<div class="col s12 m12 l6 valign-wrapper center blue lighten-1 relative" style="min-height:100vh;overflow:hidden">
+	<div id="description" class="col s12 m12 l6 valign-wrapper center blue lighten-1 relative" style="min-height:100vh;overflow:hidden">
 		<div class="container white hoverable" style="z-index:2;padding: 2em">
 			<a n:href="this, lang => 'cs'">CZ</a>
 			<a n:href="this, lang => 'en'">EN</a>

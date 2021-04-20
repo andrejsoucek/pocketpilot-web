@@ -137,6 +137,21 @@ function start(win) {
         })
       }
       main.attach(selector, apply)
+    },
+    requireSmoothScrolling: () => {
+      const selector = '[data-smooth-scroll-to]'
+      const apply = (el) => {
+        console.log(el.dataset)
+        const scrollToSel = el.dataset.smoothScrollTo
+        if (!scrollToSel) return
+        el.addEventListener('click', () => {
+          console.log('click')
+          document.querySelector(scrollToSel).scrollIntoView({
+            behavior: 'smooth'
+          })
+        })
+      }
+      main.attach(selector, apply)
     }
   }
 }

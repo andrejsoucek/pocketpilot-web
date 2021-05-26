@@ -58,6 +58,12 @@ class HCaptchaVerifier
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        return curl_exec($ch);
+        /** @var string|false $response */
+        $response = curl_exec($ch);
+        if ($response === false) {
+            return '{}';
+        }
+
+        return $response;
     }
 }

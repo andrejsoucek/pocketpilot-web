@@ -4,27 +4,17 @@ declare(strict_types=1);
 
 namespace PP\Presenters;
 
-use GettextTranslator\Gettext;
 use Nette\Application\AbortException;
-use Nette\Application\UI\Form;
-use Nette\Security\AuthenticationException;
 use PP\Controls\LoginForm;
 use PP\Controls\LoginFormFactory;
 use PP\Controls\RegisterForm;
 use PP\Controls\RegisterFormFactory;
-use PP\DirResolver;
-use PP\IncorrectCredentialsException;
-use PP\SignModel;
-use PP\User\PasswordCredentials;
 
 /**
  * @author Andrej Souček
  */
 class SignPresenter extends AppPresenter
 {
-
-    private SignModel $model;
-
     private LoginFormFactory $loginFormFactory;
 
     private RegisterFormFactory $registerFormFactory;
@@ -33,12 +23,10 @@ class SignPresenter extends AppPresenter
 
     public function __construct(
         string $hCaptchaSiteKey,
-        SignModel $model,
         LoginFormFactory $loginFormFactory,
         RegisterFormFactory $registerFormFactory
     ) {
         parent::__construct();
-        $this->model = $model;
         $this->loginFormFactory = $loginFormFactory;
         $this->registerFormFactory = $registerFormFactory;
         $this->hCaptchaSiteKey = $hCaptchaSiteKey;

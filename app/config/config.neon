@@ -3,6 +3,11 @@ parameters:
     manifestDir: %appDir%/../www/dist
     hCaptcha:
         url: https://hcaptcha.com/siteverify
+    safeSky:
+        url: https://public-api.safesky.app/v1/beacons/?
+    allowedOrigins:
+        - https://czadsb.cz
+        - https://www.czadsb.cz
 
 application:
     errorPresenter: Error
@@ -37,6 +42,7 @@ services:
     - PP\POI\POIImporter
     - PP\Presenters\PasswordRecoveryPresenter(%hCaptcha.sitekey%)
     - PP\Presenters\SignPresenter(%hCaptcha.sitekey%)
+    - PP\SafeSky\SafeSkyRead(%safeSky.url%, %safeSky.apiKey%)
     - PP\SignModel
     - PP\Terrain\TerrainRead
     - PP\Track\TrackCreate
